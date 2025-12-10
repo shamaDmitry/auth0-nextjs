@@ -1,9 +1,11 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function LoginButton() {
   return (
-    <a href="/auth/login" className="button login">
-      Log In
-    </a>
+    <Button asChild>
+      <Link href="/auth/login">Log In</Link>
+    </Button>
   );
 }
