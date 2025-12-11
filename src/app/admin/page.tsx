@@ -1,14 +1,20 @@
 import { isUserAdmin } from "@/actions/isUserAdmin";
+import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 async function AdminPage() {
+  const supabase = await createClient();
   const isAdmin = await isUserAdmin();
 
   if (!isAdmin) {
     return redirect("/unauthorized");
   }
 
-  console.log(isAdmin);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  console.log("user", user);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
