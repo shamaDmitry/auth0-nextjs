@@ -6,8 +6,6 @@ export async function isUserAdmin(): Promise<boolean> {
   try {
     const roles = await getUsersRoles();
 
-    console.log("ROLES", roles);
-
     return roles.some((role) => role.name.toLowerCase() === "admin");
   } catch (error) {
     console.error("Error checking admin status:", error);

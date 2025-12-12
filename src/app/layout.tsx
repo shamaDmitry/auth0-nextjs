@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Auth0Provider } from "@auth0/nextjs-auth0/client";
 import { ThemeProvider } from "@/components/themes/ThemeProvider";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import { AdminProvider } from "@/providers/AdminProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +33,17 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <Auth0Provider>{children}</Auth0Provider>
+          <Auth0Provider>
+            <AdminProvider>
+              <div className="flex min-h-screen flex-col">
+                <Navbar />
+
+                <main className="flex-1">{children}</main>
+
+                <Footer />
+              </div>
+            </AdminProvider>
+          </Auth0Provider>
         </ThemeProvider>
       </body>
     </html>

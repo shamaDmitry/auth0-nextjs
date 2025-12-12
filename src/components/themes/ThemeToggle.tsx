@@ -13,12 +13,16 @@ export function ThemeToggle() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted)
+    return (
+      <div className="h-9 px-4 py-2 border rounded-md animate-pulse bg-secondary min-w-[42px]"></div>
+    );
 
   return (
     <Button
+      variant={"outline"}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+      className="p-2 rounded-lg hover:opacity-90 transition-opacity"
       aria-label="Toggle theme"
     >
       {theme === "dark" ? (
