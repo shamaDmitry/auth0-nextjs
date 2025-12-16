@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/themes/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { AdminProvider } from "@/providers/AdminProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +42,8 @@ export default function RootLayout({
                 <main className="flex-1">{children}</main>
 
                 <Footer />
+
+                <Toaster />
               </div>
             </AdminProvider>
           </Auth0Provider>

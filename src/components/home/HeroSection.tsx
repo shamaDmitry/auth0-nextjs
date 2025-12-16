@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Sparkles, TrendingUp } from "lucide-react";
 
-const HeroSection = () => {
+export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-gradient-hero py-20 lg:py-32">
       <div className="absolute inset-0 overflow-hidden">
@@ -73,6 +73,4 @@ const HeroSection = () => {
       </div>
     </section>
   );
-};
-
-export default HeroSection;
+}

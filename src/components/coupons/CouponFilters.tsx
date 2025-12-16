@@ -120,10 +120,17 @@ const CouponFilters: FC<CouponFiltersProps> = ({
           {filters.search && (
             <Badge variant="secondary" className="gap-1">
               Search: {filters.search}
-              <X
-                className="h-3 w-3 cursor-pointer"
-                onClick={() => handleSearchChange("")}
-              />
+              <Button
+                variant={"ghost"}
+                size={"sm"}
+                onClick={(e) => {
+                  console.log("eeee", e);
+
+                  return handleSearchChange("");
+                }}
+              >
+                <X className="h-3 w-3 cursor-pointer" />
+              </Button>
             </Badge>
           )}
 
@@ -131,10 +138,13 @@ const CouponFilters: FC<CouponFiltersProps> = ({
             <Badge variant="secondary" className="gap-1">
               {categories.find((c) => c.slug === filters.category)?.name}
 
-              <X
-                className="h-3 w-3 cursor-pointer"
+              <Button
+                variant={"ghost"}
+                size={"sm"}
                 onClick={() => handleCategoryChange("")}
-              />
+              >
+                <X className="h-3 w-3 cursor-pointer" />
+              </Button>
             </Badge>
           )}
           <Button
