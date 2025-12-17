@@ -4,7 +4,7 @@ import React, { FC, useState } from "react";
 import { CouponFilters as FilterType } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Search, X } from "lucide-react";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -15,6 +15,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 import { categories } from "@/data/mockData";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CouponFiltersProps {
   filters: FilterType;
@@ -39,24 +42,50 @@ const CouponFilters: FC<CouponFiltersProps> = ({
     onFiltersChange({ ...filters, sortBy });
   };
 
+  const handlePriceRangeChange = (value: number[]) => {
+    onFiltersChange({ ...filters, priceRange: [value[0], value[1]] });
+  };
+
+  const handleMinDiscountChange = (value: number) => {
+    onFiltersChange({ ...filters, minDiscount: value });
+  };
+
+  const handleVerifiedOnlyChange = (checked: boolean) => {
+    onFiltersChange({ ...filters, verifiedOnly: checked });
+  };
+
+  const handleExpiringOnlyChange = (checked: boolean) => {
+    onFiltersChange({ ...filters, expiringSoon: checked });
+  };
+
   const clearFilters = () => {
     onFiltersChange({
       search: "",
       category: "",
       priceRange: [0, 1000],
       sortBy: "newest",
+      minDiscount: 0,
+      verifiedOnly: false,
+      expiringSoon: false,
     });
   };
 
-  const hasActiveFilters = filters.search || filters.category;
+  const hasActiveFilters =
+    filters.search ||
+    filters.category ||
+    filters.priceRange ||
+    filters.minDiscount ||
+    filters.verifiedOnly ||
+    filters.expiringSoon;
+
+  console.log("hasActiveFilters", hasActiveFilters);
 
   return (
     <div className="space-y-4">
-      {/* Search and Sort Row */}
       <div className="flex flex-col gap-4 sm:flex-row">
-        {/* Search */}
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+
           <Input
             placeholder="Search coupons..."
             value={filters.search}
@@ -65,11 +94,11 @@ const CouponFilters: FC<CouponFiltersProps> = ({
           />
         </div>
 
-        {/* Sort */}
         <Select value={filters.sortBy} onValueChange={handleSortChange}>
           <SelectTrigger className="w-full sm:w-48">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
+
           <SelectContent>
             <SelectItem value="newest">Newest</SelectItem>
             <SelectItem value="popular">Most Popular</SelectItem>
@@ -79,7 +108,6 @@ const CouponFilters: FC<CouponFiltersProps> = ({
           </SelectContent>
         </Select>
 
-        {/* Advanced Filters Toggle */}
         <Button
           variant="outline"
           onClick={() => setShowAdvanced(!showAdvanced)}
@@ -90,7 +118,71 @@ const CouponFilters: FC<CouponFiltersProps> = ({
         </Button>
       </div>
 
-      {/* Category Pills */}
+      {showAdvanced && (
+        <div className="rounded-lg border bg-card p-4 space-y-6 animate-in slide-in-from-top-2 duration-200">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Price Range</Label>
+
+              <Slider
+                value={filters.priceRange}
+                onValueChange={handlePriceRangeChange}
+                max={1000}
+                min={0}
+                step={10}
+                className="w-full"
+              />
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>${filters.priceRange[0]}</span>
+                <span>${filters.priceRange[1]}</span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Minimum Discount</Label>
+
+              <Slider
+                value={[filters.minDiscount || 0]}
+                onValueChange={(value) => handleMinDiscountChange(value[0])}
+                max={90}
+                min={0}
+                step={5}
+                className="w-full"
+              />
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>{filters.minDiscount || 0}% off or more</span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <Label className="text-sm font-medium">Additional Filters</Label>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="verified"
+                    checked={filters.verifiedOnly || false}
+                    onCheckedChange={handleVerifiedOnlyChange}
+                  />
+                  <Label htmlFor="verified" className="text-sm cursor-pointer">
+                    Verified deals only
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="expiring"
+                    checked={filters.expiringSoon || false}
+                    onCheckedChange={handleExpiringOnlyChange}
+                  />
+                  <Label htmlFor="expiring" className="text-sm cursor-pointer">
+                    Expiring soon (within 7 days)
+                  </Label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-2">
         <Badge
           variant={!filters.category ? "default" : "outline"}
@@ -113,24 +205,17 @@ const CouponFilters: FC<CouponFiltersProps> = ({
         ))}
       </div>
 
-      {/* Active Filters */}
       {hasActiveFilters && (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-muted-foreground">Active filters:</span>
+
           {filters.search && (
             <Badge variant="secondary" className="gap-1">
               Search: {filters.search}
-              <Button
-                variant={"ghost"}
-                size={"sm"}
-                onClick={(e) => {
-                  console.log("eeee", e);
-
-                  return handleSearchChange("");
-                }}
-              >
-                <X className="h-3 w-3 cursor-pointer" />
-              </Button>
+              <X
+                className="h-3 w-3 cursor-pointer"
+                onClick={() => handleSearchChange("")}
+              />
             </Badge>
           )}
 
@@ -139,20 +224,73 @@ const CouponFilters: FC<CouponFiltersProps> = ({
               {categories.find((c) => c.slug === filters.category)?.name}
 
               <Button
-                variant={"ghost"}
-                size={"sm"}
+                className="size-5"
+                variant={"destructive"}
+                size={"icon-sm"}
                 onClick={() => handleCategoryChange("")}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          )}
+
+          {(filters.priceRange[0] > 0 || filters.priceRange[1] < 1000) && (
+            <Badge variant="secondary" className="gap-1">
+              ${filters.priceRange[0]} - ${filters.priceRange[1]}
+              <Button
+                className="size-5"
+                variant={"destructive"}
+                size={"icon-sm"}
+                onClick={() => handlePriceRangeChange([0, 1000])}
               >
                 <X className="h-3 w-3 cursor-pointer" />
               </Button>
             </Badge>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearFilters}
-            className="text-destructive"
-          >
+
+          {filters.minDiscount && filters.minDiscount > 0 ? (
+            <Badge variant="secondary" className="gap-1">
+              {filters.minDiscount}%+ off
+              <Button
+                className="size-5"
+                variant={"destructive"}
+                size={"icon-sm"}
+                onClick={() => handleMinDiscountChange(0)}
+              >
+                <X className="h-3 w-3 cursor-pointer" />
+              </Button>
+            </Badge>
+          ) : null}
+
+          {filters.verifiedOnly && (
+            <Badge variant="secondary" className="gap-1">
+              Verified only
+              <Button
+                className="size-5"
+                variant={"destructive"}
+                size={"icon-sm"}
+                onClick={() => handleVerifiedOnlyChange(false)}
+              >
+                <X className="h-3 w-3 cursor-pointer" />
+              </Button>
+            </Badge>
+          )}
+
+          {filters.expiringSoon && (
+            <Badge variant="secondary" className="gap-1">
+              Expiring soon
+              <Button
+                className="size-5"
+                variant={"destructive"}
+                size={"icon-sm"}
+                onClick={() => handleExpiringOnlyChange(false)}
+              >
+                <X className="h-3 w-3 cursor-pointer" />
+              </Button>
+            </Badge>
+          )}
+
+          <Button variant="destructive" size="sm" onClick={clearFilters}>
             Clear all
           </Button>
         </div>

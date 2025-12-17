@@ -63,4 +63,7 @@ export interface CouponFilters {
   category: string;
   priceRange: [number, number];
   sortBy: "newest" | "popular" | "price-low" | "price-high" | "discount";
+  minDiscount?: number;
+  verifiedOnly?: boolean;
+  expiringSoon?: boolean;
 }

@@ -74,7 +74,7 @@ const CouponDetailsPage = () => {
               height={500}
               src={coupon.imageUrl}
               alt={coupon.title}
-              className="aspect-[16/9] w-full object-cover"
+              className="aspect-video w-full object-cover"
             />
             <div className="absolute left-4 top-4">
               <Badge className="bg-primary text-lg text-primary-foreground shadow-lg">
@@ -83,7 +83,6 @@ const CouponDetailsPage = () => {
             </div>
           </div>
 
-          {/* Title & Merchant */}
           <div className="mb-6">
             <div className="mb-2 flex items-center gap-2">
               <Badge variant="secondary">{coupon.category}</Badge>
@@ -100,7 +99,6 @@ const CouponDetailsPage = () => {
             <p className="text-lg text-primary">{coupon.merchantName}</p>
           </div>
 
-          {/* Description */}
           <Card className="mb-6">
             <CardHeader>
               <CardTitle>About This Deal</CardTitle>
@@ -110,7 +108,6 @@ const CouponDetailsPage = () => {
             </CardContent>
           </Card>
 
-          {/* Terms & Conditions */}
           <Card>
             <CardHeader>
               <CardTitle>Terms & Conditions</CardTitle>
@@ -125,6 +122,7 @@ const CouponDetailsPage = () => {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar className="h-4 w-4 text-primary" />
+
                   <span>
                     Valid from:{" "}
                     {new Date(coupon.validFrom).toLocaleDateString()}
@@ -133,6 +131,7 @@ const CouponDetailsPage = () => {
 
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar className="h-4 w-4 text-primary" />
+
                   <span>
                     Valid until:{" "}
                     {new Date(coupon.validUntil).toLocaleDateString()}
@@ -143,36 +142,35 @@ const CouponDetailsPage = () => {
           </Card>
         </div>
 
-        {/* Sidebar - Purchase Card */}
         <div className="lg:col-span-1">
           <div className="sticky top-24">
             <Card className="shadow-lg">
               <CardContent className="p-6">
-                {/* Price */}
                 <div className="mb-6 text-center">
                   <div className="mb-1 text-lg text-muted-foreground line-through">
                     ${coupon.originalPrice}
                   </div>
+
                   <div className="text-4xl font-bold text-primary">
                     ${coupon.discountedPrice}
                   </div>
+
                   <div className="mt-1 text-sm text-success">
                     You save ${coupon.originalPrice - coupon.discountedPrice}
                   </div>
                 </div>
 
-                {/* Buy Button */}
                 <Button size="lg" className="mb-4 w-full" onClick={handleBuy}>
                   <ShoppingCart className="mr-2 h-5 w-5" />
                   Buy Now
                 </Button>
 
-                {/* Secondary Actions */}
                 <div className="mb-6 flex gap-2">
                   <Button variant="outline" className="flex-1">
                     <Heart className="mr-2 h-4 w-4" />
                     Save
                   </Button>
+
                   <Button variant="outline" className="flex-1">
                     <Share2 className="mr-2 h-4 w-4" />
                     Share
@@ -181,23 +179,27 @@ const CouponDetailsPage = () => {
 
                 <Separator className="mb-6" />
 
-                {/* Stats */}
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Sold</span>
+
                     <span className="font-semibold">{coupon.soldCount}</span>
                   </div>
+
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Remaining</span>
+
                     <span className="font-semibold">
                       {coupon.quantity - coupon.soldCount}
                     </span>
                   </div>
+
                   <div className="flex items-center justify-between">
                     <span className="flex items-center text-muted-foreground">
                       <Clock className="mr-1 h-4 w-4" />
                       Time left
                     </span>
+
                     <span className="font-semibold text-primary">
                       {daysLeft > 0 ? `${daysLeft} days` : "Expires soon"}
                     </span>

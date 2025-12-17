@@ -23,6 +23,9 @@ const CouponsPage = () => {
     category: initialCategory,
     priceRange: [0, 1000],
     sortBy: "newest",
+    minDiscount: 0,
+    verifiedOnly: false,
+    expiringSoon: false,
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +36,6 @@ const CouponsPage = () => {
     // Search filter
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
-
       result = result.filter(
         (coupon) =>
           coupon.title.toLowerCase().includes(searchLower) ||
@@ -47,6 +49,7 @@ const CouponsPage = () => {
       const categoryName = categories.find(
         (c) => c.slug === filters.category
       )?.name;
+
       if (categoryName) {
         result = result.filter((coupon) => coupon.category === categoryName);
       }
@@ -58,6 +61,30 @@ const CouponsPage = () => {
         coupon.discountedPrice >= filters.priceRange[0] &&
         coupon.discountedPrice <= filters.priceRange[1]
     );
+
+    // Minimum discount filter
+    if (filters.minDiscount && filters.minDiscount > 0) {
+      result = result.filter(
+        (coupon) => coupon.discountPercentage >= filters.minDiscount!
+      );
+    }
+
+    if (filters.verifiedOnly) {
+      result = result.filter((coupon) => coupon.soldCount >= 10);
+    }
+
+    // Expiring soon filter (within 7 days)
+    if (filters.expiringSoon) {
+      const sevenDaysFromNow = new Date();
+
+      sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+
+      result = result.filter((coupon) => {
+        const expiryDate = new Date(coupon.expiresAt);
+
+        return expiryDate <= sevenDaysFromNow && expiryDate >= new Date();
+      });
+    }
 
     // Sort
     switch (filters.sortBy) {
@@ -114,7 +141,11 @@ const CouponsPage = () => {
       <div className="mb-8">
         <h1 className="mb-2 text-3xl font-bold">All Deals</h1>
         <p className="text-muted-foreground">
-          Discover 11 amazing deals waiting for you
+          Discover{" "}
+          <span className="font-bold text-primary">
+            {filteredCoupons.length}
+          </span>{" "}
+          amazing deals waiting for you
         </p>
       </div>
 
