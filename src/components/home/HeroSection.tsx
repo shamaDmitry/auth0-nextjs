@@ -56,16 +56,18 @@ export function HeroSection() {
             className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground animate-fade-in"
             style={{ animationDelay: "400ms" }}
           >
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-success" />
+            <div className="flex items-center gap-2 bg-accent p-4 rounded-md text-accent-foreground">
+              <TrendingUp className="h-5 w-5" />
               <span>50,000+ deals redeemed</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-primary" />
+
+            <div className="flex items-center gap-2 bg-accent p-4 rounded-md text-accent-foreground">
+              <Shield className="h-5 w-5" />
               <span>Secure payments</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-accent" />
+
+            <div className="flex items-center gap-2 bg-accent p-4 rounded-md text-accent-foreground">
+              <Sparkles className="h-5 w-5 " />
               <span>500+ trusted merchants</span>
             </div>
           </div>

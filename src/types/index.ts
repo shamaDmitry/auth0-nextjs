@@ -20,6 +20,7 @@ export interface Coupon {
   location?: string;
   validFrom: string;
   validUntil: string;
+  is_featured?: boolean;
 }
 
 export interface Category {
@@ -27,7 +28,7 @@ export interface Category {
   name: string;
   slug: string;
   icon: string;
-  couponCount: number;
+  coupon_count: number;
 }
 
 export interface User {

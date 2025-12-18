@@ -1,7 +1,7 @@
 "use client";
 
-import React, { FC, useState } from "react";
-import { CouponFilters as FilterType } from "@/types";
+import React, { FC, useEffect, useState } from "react";
+import { Category, CouponFilters as FilterType } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -14,18 +14,20 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
-import { categories } from "@/data/mockData";
+// import { categories } from "@/data/mockData";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface CouponFiltersProps {
   filters: FilterType;
+  categories: Category[];
   onFiltersChange: (filters: FilterType) => void;
 }
 
 const CouponFilters: FC<CouponFiltersProps> = ({
   filters,
+  categories,
   onFiltersChange,
 }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -77,8 +79,6 @@ const CouponFilters: FC<CouponFiltersProps> = ({
     filters.minDiscount ||
     filters.verifiedOnly ||
     filters.expiringSoon;
-
-  console.log("hasActiveFilters", hasActiveFilters);
 
   return (
     <div className="space-y-4">
@@ -132,6 +132,7 @@ const CouponFilters: FC<CouponFiltersProps> = ({
                 step={10}
                 className="w-full"
               />
+
               <div className="flex justify-between text-sm text-muted-foreground">
                 <span>${filters.priceRange[0]}</span>
                 <span>${filters.priceRange[1]}</span>

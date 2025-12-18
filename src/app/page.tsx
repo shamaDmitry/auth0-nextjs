@@ -3,18 +3,28 @@
 import { CategorySection } from "@/components/home/CategorySection";
 import { FeaturedDeals } from "@/components/home/FeaturedDeals";
 import { HeroSection } from "@/components/home/HeroSection";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
-  // const session = await auth0.getSession();
-  // const user = session?.user;
+  const supabase = await createClient();
+
+  const { data: categories } = await supabase.from("categories").select();
+  const { data: featuredCoupons } = await supabase
+    .from("coupons")
+    .select("*")
+    .eq("is_featured", true);
+
+  const { data: coupons } = await supabase.from("coupons").select("*");
+
+  console.log("coupons", coupons);
 
   return (
     <div className="container mx-auto p-4">
       <HeroSection />
 
-      <CategorySection />
+      <CategorySection categories={categories} />
 
-      <FeaturedDeals />
+      {featuredCoupons && <FeaturedDeals featuredCoupons={featuredCoupons} />}
     </div>
   );
 }

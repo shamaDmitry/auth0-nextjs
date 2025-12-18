@@ -1,11 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { coupons } from "@/data/mockData";
+// import { coupons } from "@/data/mockData";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { CouponCard } from "@/components/coupons/CouponCard";
+import { Coupon } from "@/types";
 
-export function FeaturedDeals() {
-  const featuredCoupons = coupons.slice(0, 4);
+export function FeaturedDeals({
+  featuredCoupons,
+}: {
+  featuredCoupons: Coupon[];
+}) {
+  // const featuredCoupons = coupons.slice(0, 4);
 
   return (
     <section className="bg-muted/30 py-16">

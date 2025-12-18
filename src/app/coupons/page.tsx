@@ -1,15 +1,16 @@
 "use client";
 
 import CouponFilters from "@/components/coupons/CouponFilters";
-import { useMemo, useState } from "react";
-import { CouponFilters as FilterType, PaginationInfo } from "@/types";
+import { useEffect, useMemo, useState } from "react";
+import { Category, CouponFilters as FilterType, PaginationInfo } from "@/types";
 import {
   coupons as allCoupons,
   generateMoreCoupons,
-  categories,
+  // categories,
 } from "@/data/mockData";
 import { CouponCard } from "@/components/coupons/CouponCard";
 import { CouponsPagination } from "@/components/coupons/CouponsPagination";
+import { createClient } from "@/lib/supabase/client";
 
 const extendedCoupons = [...allCoupons, ...generateMoreCoupons(40)];
 
@@ -17,6 +18,25 @@ const ITEMS_PER_PAGE = 8;
 
 const CouponsPage = () => {
   const initialCategory = "";
+  const supabase = createClient();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const { data, error } = await supabase.from("categories").select("*");
+
+      if (error) {
+        console.error(error);
+      } else {
+        setCategories(data);
+      }
+
+      setLoading(false);
+    };
+
+    fetchTodos();
+  }, [supabase]);
 
   const [filters, setFilters] = useState<FilterType>({
     search: "",
@@ -109,7 +129,7 @@ const CouponsPage = () => {
     }
 
     return result;
-  }, [filters]);
+  }, [filters, categories]);
 
   const totalPages = Math.ceil(filteredCoupons.length / ITEMS_PER_PAGE);
 
@@ -151,6 +171,7 @@ const CouponsPage = () => {
 
       <div className="mb-8">
         <CouponFilters
+          categories={categories}
           filters={filters}
           onFiltersChange={(newFilters) => {
             return handleFiltersChange(newFilters);
