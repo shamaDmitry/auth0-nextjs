@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { Category, CouponFilters as FilterType } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Search, X } from "lucide-react";
@@ -18,14 +18,16 @@ import { SlidersHorizontal } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { Skeleton } from "@/components/ui/skeleton";
 interface CouponFiltersProps {
+  loading: boolean;
   filters: FilterType;
   categories: Category[];
   onFiltersChange: (filters: FilterType) => void;
 }
 
 const CouponFilters: FC<CouponFiltersProps> = ({
+  loading,
   filters,
   categories,
   onFiltersChange,
@@ -75,7 +77,6 @@ const CouponFilters: FC<CouponFiltersProps> = ({
   const hasActiveFilters =
     filters.search ||
     filters.category ||
-    filters.priceRange ||
     filters.minDiscount ||
     filters.verifiedOnly ||
     filters.expiringSoon;
@@ -122,16 +123,33 @@ const CouponFilters: FC<CouponFiltersProps> = ({
         <div className="rounded-lg border bg-card p-4 space-y-6 animate-in slide-in-from-top-2 duration-200">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-3">
-              <Label className="text-sm font-medium">Price Range</Label>
+              <div className="flex gap-3 items-center">
+                <Label className="text-sm font-medium whitespace-nowrap">
+                  Price Range
+                </Label>
 
-              <Slider
-                value={filters.priceRange}
-                onValueChange={handlePriceRangeChange}
-                max={1000}
-                min={0}
-                step={10}
-                className="w-full"
-              />
+                <Slider
+                  value={filters.priceRange}
+                  onValueChange={handlePriceRangeChange}
+                  max={1000}
+                  min={0}
+                  step={10}
+                  className="w-full"
+                />
+
+                <Button
+                  variant={"destructive"}
+                  size={"icon-xs"}
+                  onClick={() =>
+                    onFiltersChange({
+                      ...filters,
+                      priceRange: [0, 1000],
+                    })
+                  }
+                >
+                  <X />
+                </Button>
+              </div>
 
               <div className="flex justify-between text-sm text-muted-foreground">
                 <span>${filters.priceRange[0]}</span>
@@ -193,17 +211,30 @@ const CouponFilters: FC<CouponFiltersProps> = ({
           All
         </Badge>
 
-        {categories.map((category) => (
-          <Badge
-            key={category.id}
-            variant={filters.category === category.slug ? "default" : "outline"}
-            className="cursor-pointer transition-colors hover:bg-primary hover:text-primary-foreground"
-            onClick={() => handleCategoryChange(category.slug)}
-          >
-            <span className="mr-1">{category.icon}</span>
-            {category.name}
-          </Badge>
-        ))}
+        {loading &&
+          new Array(5)
+            .fill(0)
+            .map((item, index) => (
+              <Skeleton
+                key={index}
+                className="h-5 w-24 rounded-full bg-primary/30"
+              />
+            ))}
+
+        {!loading &&
+          categories.map((category) => (
+            <Badge
+              key={category.id}
+              variant={
+                filters.category === category.slug ? "default" : "outline"
+              }
+              className="cursor-pointer transition-colors hover:bg-primary hover:text-primary-foreground"
+              onClick={() => handleCategoryChange(category.slug)}
+            >
+              <span className="mr-1">{category.icon}</span>
+              {category.name}
+            </Badge>
+          ))}
       </div>
 
       {hasActiveFilters && (

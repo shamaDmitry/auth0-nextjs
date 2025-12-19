@@ -11,17 +11,19 @@ interface CouponCardProps {
 
 export function CouponCard({ coupon }: CouponCardProps) {
   const daysLeft = Math.ceil(
-    (new Date(coupon.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+    (new Date(coupon.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
   );
 
+  console.log("coupon", coupon);
+
   return (
-    <div className="group overflow-hidden rounded-xl border border-border bg-card shadow-card card-hover">
+    <div className="group overflow-hidden rounded-xl border border-border bg-card shadow-card transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl">
       {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden">
+      <div className="relative aspect-4/3 overflow-hidden">
         <Image
           width={200}
           height={200}
-          src={coupon.imageUrl}
+          src={coupon.image_url}
           alt={coupon.title}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -29,7 +31,7 @@ export function CouponCard({ coupon }: CouponCardProps) {
         {/* Discount Badge */}
         <div className="absolute left-3 top-3">
           <Badge className="bg-primary text-primary-foreground shadow-lg">
-            -{coupon.discountPercentage}%
+            -{coupon.discount_percentage}%
           </Badge>
         </div>
 
@@ -58,7 +60,7 @@ export function CouponCard({ coupon }: CouponCardProps) {
       <div className="p-4">
         {/* Merchant */}
         <p className="mb-1 text-sm font-medium text-primary">
-          {coupon.merchantName}
+          {coupon.merchant_name}
         </p>
 
         {/* Title */}
@@ -70,7 +72,7 @@ export function CouponCard({ coupon }: CouponCardProps) {
 
         {/* Short Description */}
         <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">
-          {coupon.shortDescription}
+          {coupon.short_description}
         </p>
 
         {/* Meta Info */}
@@ -91,10 +93,10 @@ export function CouponCard({ coupon }: CouponCardProps) {
         <div className="flex items-end justify-between">
           <div>
             <span className="text-sm text-muted-foreground line-through">
-              ${coupon.originalPrice}
+              ${coupon.original_price}
             </span>
             <span className="ml-2 text-2xl font-bold text-primary">
-              ${coupon.discountedPrice}
+              ${coupon.discounted_price}
             </span>
           </div>
 
@@ -105,8 +107,8 @@ export function CouponCard({ coupon }: CouponCardProps) {
 
         {/* Sold Count */}
         <div className="mt-3 flex items-center justify-between border-t border-border pt-3 text-xs text-muted-foreground">
-          <span>{coupon.soldCount} bought</span>
-          <span>{coupon.quantity - coupon.soldCount} remaining</span>
+          <span>{coupon.sold_count} bought</span>
+          <span>{coupon.quantity - coupon.sold_count} remaining</span>
         </div>
       </div>
     </div>

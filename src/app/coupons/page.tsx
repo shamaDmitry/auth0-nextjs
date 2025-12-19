@@ -2,28 +2,35 @@
 
 import CouponFilters from "@/components/coupons/CouponFilters";
 import { useEffect, useMemo, useState } from "react";
-import { Category, CouponFilters as FilterType, PaginationInfo } from "@/types";
 import {
-  coupons as allCoupons,
-  generateMoreCoupons,
-  // categories,
-} from "@/data/mockData";
+  Category,
+  Coupon,
+  CouponFilters as FilterType,
+  PaginationInfo,
+} from "@/types";
+
 import { CouponCard } from "@/components/coupons/CouponCard";
 import { CouponsPagination } from "@/components/coupons/CouponsPagination";
 import { createClient } from "@/lib/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const extendedCoupons = [...allCoupons, ...generateMoreCoupons(40)];
-
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 4;
 
 const CouponsPage = () => {
   const initialCategory = "";
   const supabase = createClient();
+
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
+
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [isCouponsLoading, setIsCouponsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTodos = async () => {
+    setIsCategoriesLoading(true);
+    setIsCouponsLoading(true);
+
+    const fetchCaregories = async () => {
       const { data, error } = await supabase.from("categories").select("*");
 
       if (error) {
@@ -32,10 +39,23 @@ const CouponsPage = () => {
         setCategories(data);
       }
 
-      setLoading(false);
+      setIsCategoriesLoading(false);
     };
 
-    fetchTodos();
+    const fetchCoupons = async () => {
+      const { data, error } = await supabase.from("coupons").select("*");
+
+      if (error) {
+        console.error(error);
+      } else {
+        setCoupons(data);
+      }
+
+      setIsCouponsLoading(false);
+    };
+
+    fetchCoupons();
+    fetchCaregories();
   }, [supabase]);
 
   const [filters, setFilters] = useState<FilterType>({
@@ -51,7 +71,8 @@ const CouponsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredCoupons = useMemo(() => {
-    let result = [...extendedCoupons];
+    // let result = [...extendedCoupons];
+    let result = [...coupons];
 
     // Search filter
     if (filters.search) {
@@ -60,7 +81,7 @@ const CouponsPage = () => {
         (coupon) =>
           coupon.title.toLowerCase().includes(searchLower) ||
           coupon.description.toLowerCase().includes(searchLower) ||
-          coupon.merchantName.toLowerCase().includes(searchLower)
+          coupon.merchant_name.toLowerCase().includes(searchLower)
       );
     }
 
@@ -78,19 +99,19 @@ const CouponsPage = () => {
     // Price range filter
     result = result.filter(
       (coupon) =>
-        coupon.discountedPrice >= filters.priceRange[0] &&
-        coupon.discountedPrice <= filters.priceRange[1]
+        coupon.discounted_price >= filters.priceRange[0] &&
+        coupon.discounted_price <= filters.priceRange[1]
     );
 
     // Minimum discount filter
     if (filters.minDiscount && filters.minDiscount > 0) {
       result = result.filter(
-        (coupon) => coupon.discountPercentage >= filters.minDiscount!
+        (coupon) => coupon.discount_percentage >= filters.minDiscount!
       );
     }
 
     if (filters.verifiedOnly) {
-      result = result.filter((coupon) => coupon.soldCount >= 10);
+      result = result.filter((coupon) => coupon.sold_count >= 10);
     }
 
     // Expiring soon filter (within 7 days)
@@ -100,7 +121,7 @@ const CouponsPage = () => {
       sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
 
       result = result.filter((coupon) => {
-        const expiryDate = new Date(coupon.expiresAt);
+        const expiryDate = new Date(coupon.expires_at);
 
         return expiryDate <= sevenDaysFromNow && expiryDate >= new Date();
       });
@@ -111,25 +132,25 @@ const CouponsPage = () => {
       case "newest":
         result.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
         break;
       case "popular":
-        result.sort((a, b) => b.soldCount - a.soldCount);
+        result.sort((a, b) => b.sold_count - a.sold_count);
         break;
       case "price-low":
-        result.sort((a, b) => a.discountedPrice - b.discountedPrice);
+        result.sort((a, b) => a.discounted_price - b.discounted_price);
         break;
       case "price-high":
-        result.sort((a, b) => b.discountedPrice - a.discountedPrice);
+        result.sort((a, b) => b.discounted_price - a.discounted_price);
         break;
       case "discount":
-        result.sort((a, b) => b.discountPercentage - a.discountPercentage);
+        result.sort((a, b) => b.discount_percentage - a.discount_percentage);
         break;
     }
 
     return result;
-  }, [filters, categories]);
+  }, [coupons, filters, categories]);
 
   const totalPages = Math.ceil(filteredCoupons.length / ITEMS_PER_PAGE);
 
@@ -156,6 +177,8 @@ const CouponsPage = () => {
     setCurrentPage(1);
   };
 
+  console.log("paginatedCoupons", paginatedCoupons);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -171,13 +194,20 @@ const CouponsPage = () => {
 
       <div className="mb-8">
         <CouponFilters
+          loading={isCategoriesLoading}
           categories={categories}
           filters={filters}
           onFiltersChange={(newFilters) => {
-            return handleFiltersChange(newFilters);
+            handleFiltersChange(newFilters);
           }}
         />
       </div>
+
+      {isCouponsLoading && paginatedCoupons.length === 0 && (
+        <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <Skeleton />
+        </div>
+      )}
 
       {paginatedCoupons.length > 0 ? (
         <>
@@ -185,7 +215,7 @@ const CouponsPage = () => {
             {paginatedCoupons.map((coupon, index) => (
               <div
                 key={coupon.id}
-                className="animate-fade-in"
+                className="animate"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 <CouponCard coupon={coupon} />

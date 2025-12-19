@@ -14,17 +14,15 @@ export default async function Home() {
     .select("*")
     .eq("is_featured", true);
 
-  const { data: coupons } = await supabase.from("coupons").select("*");
-
-  console.log("coupons", coupons);
-
   return (
     <div className="container mx-auto p-4">
       <HeroSection />
 
       <CategorySection categories={categories} />
 
-      {featuredCoupons && <FeaturedDeals featuredCoupons={featuredCoupons} />}
+      {featuredCoupons && featuredCoupons.length > 0 && (
+        <FeaturedDeals featuredCoupons={featuredCoupons} />
+      )}
     </div>
   );
 }

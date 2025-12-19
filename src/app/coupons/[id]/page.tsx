@@ -13,26 +13,59 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { coupons } from "@/data/mockData";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { createClient } from "@/lib/supabase/client";
+import { Coupon } from "@/types";
+import { Spinner } from "@/components/ui/spinner";
 
 const CouponDetailsPage = () => {
-  // const { id } = useParams<{ id: string }>();
   // const { isAuthenticated, login } = useAuth();
   const { id } = useParams();
+  const supabase = createClient();
+  const [coupon, setCoupon] = useState<Coupon | null>(null);
+  const [isCouponLoading, setIsCouponLoading] = useState(true);
 
-  const coupon = coupons.find((c) => c.id === id);
+  useEffect(() => {
+    setIsCouponLoading(true);
+
+    const fetchCoupon = async () => {
+      const { data, error } = await supabase
+        .from("coupons")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error(error);
+      } else {
+        setCoupon(data);
+      }
+
+      setIsCouponLoading(false);
+    };
+
+    fetchCoupon();
+  }, [supabase, id]);
+
+  if (isCouponLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   if (!coupon) {
     return (
-      <div className="container mx-auto px-4 py-20 text-center">
+      <div className="container mx-auto px-4 py-8 text-center">
         <h1 className="mb-4 text-2xl font-bold">Coupon not found</h1>
+
         <Button asChild>
           <Link href="/coupons">Browse All Coupons</Link>
         </Button>
@@ -41,7 +74,7 @@ const CouponDetailsPage = () => {
   }
 
   const daysLeft = Math.ceil(
-    (new Date(coupon.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+    (new Date(coupon.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
   );
 
   const handleBuy = () => {
@@ -72,13 +105,13 @@ const CouponDetailsPage = () => {
             <Image
               width={1000}
               height={500}
-              src={coupon.imageUrl}
+              src={coupon.image_url}
               alt={coupon.title}
               className="aspect-video w-full object-cover"
             />
             <div className="absolute left-4 top-4">
               <Badge className="bg-primary text-lg text-primary-foreground shadow-lg">
-                -{coupon.discountPercentage}% OFF
+                -{coupon.discount_percentage}% OFF
               </Badge>
             </div>
           </div>
@@ -96,7 +129,7 @@ const CouponDetailsPage = () => {
 
             <h1 className="mb-2 text-3xl font-bold">{coupon.title}</h1>
 
-            <p className="text-lg text-primary">{coupon.merchantName}</p>
+            <p className="text-lg text-primary">{coupon.merchant_name}</p>
           </div>
 
           <Card className="mb-6">
@@ -114,7 +147,7 @@ const CouponDetailsPage = () => {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                {coupon.termsAndConditions}
+                {coupon?.terms_and_conditions}
               </p>
 
               <Separator className="my-4" />
@@ -125,7 +158,7 @@ const CouponDetailsPage = () => {
 
                   <span>
                     Valid from:{" "}
-                    {new Date(coupon.validFrom).toLocaleDateString()}
+                    {new Date(coupon.valid_from).toLocaleDateString()}
                   </span>
                 </div>
 
@@ -134,7 +167,7 @@ const CouponDetailsPage = () => {
 
                   <span>
                     Valid until:{" "}
-                    {new Date(coupon.validUntil).toLocaleDateString()}
+                    {new Date(coupon.valid_until).toLocaleDateString()}
                   </span>
                 </div>
               </div>
@@ -148,15 +181,15 @@ const CouponDetailsPage = () => {
               <CardContent className="p-6">
                 <div className="mb-6 text-center">
                   <div className="mb-1 text-lg text-muted-foreground line-through">
-                    ${coupon.originalPrice}
+                    ${coupon.original_price}
                   </div>
 
                   <div className="text-4xl font-bold text-primary">
-                    ${coupon.discountedPrice}
+                    ${coupon.discounted_price}
                   </div>
 
                   <div className="mt-1 text-sm text-success">
-                    You save ${coupon.originalPrice - coupon.discountedPrice}
+                    You save ${coupon.original_price - coupon.discounted_price}
                   </div>
                 </div>
 
@@ -183,14 +216,14 @@ const CouponDetailsPage = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Sold</span>
 
-                    <span className="font-semibold">{coupon.soldCount}</span>
+                    <span className="font-semibold">{coupon.sold_count}</span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Remaining</span>
 
                     <span className="font-semibold">
-                      {coupon.quantity - coupon.soldCount}
+                      {coupon.quantity - coupon.sold_count}
                     </span>
                   </div>
 

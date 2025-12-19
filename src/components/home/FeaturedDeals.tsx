@@ -12,6 +12,8 @@ export function FeaturedDeals({
 }) {
   // const featuredCoupons = coupons.slice(0, 4);
 
+  console.log("featuredCoupons", featuredCoupons);
+
   return (
     <section className="bg-muted/30 py-16">
       <div className="container mx-auto px-4">
