@@ -5,8 +5,10 @@ import Link from "next/link";
 
 export default function LogoutButton({ className }: { className?: string }) {
   return (
-    <Button asChild variant={"destructive"} className={className}>
-      <Link href="/auth/logout">Log Out</Link>
-    </Button>
+    // <Button asChild variant={"destructive"} className={className}>
+    //   <Link href="/auth/logout">Log Out</Link>
+    // </Button>
+
+    <a href="/auth/logout">Log Out</a>
   );
 }

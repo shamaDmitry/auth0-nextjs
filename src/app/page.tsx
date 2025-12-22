@@ -1,4 +1,4 @@
-// import { auth0 } from "@/lib/auth0";
+import { auth0 } from "@/lib/auth0";
 
 import { CategorySection } from "@/components/home/CategorySection";
 import { FeaturedDeals } from "@/components/home/FeaturedDeals";
@@ -7,6 +7,8 @@ import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
   const supabase = await createClient();
+  const session = await auth0.getSession();
+  console.log("session", session?.user);
 
   const { data: categories } = await supabase.from("categories").select();
   const { data: featuredCoupons } = await supabase

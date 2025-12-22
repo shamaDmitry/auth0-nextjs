@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-// import { coupons } from "@/data/mockData";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { CouponCard } from "@/components/coupons/CouponCard";
@@ -10,10 +9,6 @@ export function FeaturedDeals({
 }: {
   featuredCoupons: Coupon[];
 }) {
-  // const featuredCoupons = coupons.slice(0, 4);
-
-  console.log("featuredCoupons", featuredCoupons);
-
   return (
     <section className="bg-muted/30 py-16">
       <div className="container mx-auto px-4">
