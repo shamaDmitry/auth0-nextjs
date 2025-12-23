@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth0 } from "@/lib/auth0";
 import { createClient } from "@/lib/supabase/server";
+import { Coupon } from "@/types";
 import { DollarSign, Plus, Ticket, TrendingUp, Users } from "lucide-react";
 import { redirect } from "next/navigation";
 
@@ -101,7 +102,7 @@ async function AdminPage() {
         </CardHeader>
 
         <CardContent>
-          <CouponTable coupons={coupons} />
+          <CouponTable coupons={coupons as Coupon[]} />
         </CardContent>
       </Card>
     </div>

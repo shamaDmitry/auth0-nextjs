@@ -14,6 +14,7 @@ import { Coupon } from "@/types";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Edit, Trash2 } from "lucide-react";
+import CouponDialog from "@/components/admin/CouponDialog";
 
 interface CouponTableProps {
   coupons: Coupon[];
@@ -22,6 +23,8 @@ interface CouponTableProps {
 const CouponTable: FC<CouponTableProps> = ({ coupons }) => {
   return (
     <>
+      <CouponDialog />
+
       <Table>
         <TableHeader>
           <TableRow>

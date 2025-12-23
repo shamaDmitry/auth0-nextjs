@@ -1,6 +1,4 @@
-import { Coupon, Category, PurchasedCoupon } from "@/types";
-
-export const categories: Category[] = [
+export const categories = [
   {
     id: "1",
     name: "Restaurants",
@@ -47,7 +45,7 @@ export const categories: Category[] = [
   },
 ];
 
-export const coupons: Coupon[] = [
+export const coupons = [
   {
     id: "1",
     title: "50% Off Fine Dining Experience",
@@ -250,7 +248,7 @@ export const coupons: Coupon[] = [
   },
 ];
 
-export const purchasedCoupons: PurchasedCoupon[] = [
+export const purchasedCoupons = [
   {
     id: "p1",
     couponId: "1",
@@ -274,8 +272,8 @@ export const purchasedCoupons: PurchasedCoupon[] = [
   },
 ];
 
-export const generateMoreCoupons = (count: number): Coupon[] => {
-  const additionalCoupons: Coupon[] = [];
+export const generateMoreCoupons = (count: number) => {
+  const additionalCoupons = [];
   const images = [
     "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800",
     "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800",

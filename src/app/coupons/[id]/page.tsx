@@ -87,8 +87,6 @@ const CouponDetailsPage = () => {
     // TODO: Integrate with Stripe
   };
 
-  console.log("coupon", coupon);
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
@@ -120,7 +118,7 @@ const CouponDetailsPage = () => {
 
           <div className="mb-6">
             <div className="mb-2 flex items-center gap-2">
-              <Badge variant="secondary">{coupon.category.name}</Badge>
+              <Badge>{coupon.category.name}</Badge>
 
               {coupon.location && (
                 <span className="flex items-center text-sm text-muted-foreground">
