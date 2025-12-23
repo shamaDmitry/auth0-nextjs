@@ -1,12 +1,11 @@
 import { isUserAdmin } from "@/actions/isUserAdmin";
 import CouponModalButton from "@/components/admin/CouponModalButton";
 import CouponTable from "@/components/admin/CouponTable";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth0 } from "@/lib/auth0";
 import { createClient } from "@/lib/supabase/server";
 import { Coupon } from "@/types";
-import { DollarSign, Plus, Ticket, TrendingUp, Users } from "lucide-react";
+import { DollarSign, Ticket, TrendingUp, Users } from "lucide-react";
 import { redirect } from "next/navigation";
 
 async function AdminPage() {
@@ -24,7 +23,7 @@ async function AdminPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex items-center justify-between relative">
         <div>
           <h1 className="mb-2 text-3xl font-bold">
             Admin Dashboard{" "}

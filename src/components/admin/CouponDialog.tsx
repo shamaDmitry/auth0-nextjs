@@ -4,37 +4,43 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { useAdminStore } from "@/stores/useAdminStore";
+import CouponForm from "./CouponForm";
+import { createClient } from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
+import { Category } from "@/types";
 
 const CouponDialog = () => {
+  const supabase = createClient();
   const { isCouponModalOpen, setIsCouponModalOpen } = useAdminStore();
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [, setIsCategoriesLoading] = useState(true);
+
+  useEffect(() => {
+    setIsCategoriesLoading(true);
+
+    const fetchCaregories = async () => {
+      const { data, error } = await supabase.from("categories").select("*");
+
+      if (error) {
+        console.error(error);
+      } else {
+        setCategories(data);
+      }
+
+      setIsCategoriesLoading(false);
+    };
+
+    fetchCaregories();
+  }, [supabase]);
 
   return (
     <Dialog open={isCouponModalOpen} onOpenChange={setIsCouponModalOpen}>
-      {/* <DialogTrigger asChild>
-        <Button variant="hero">
-          <Plus className="size-4" />
-          Create Coupon
-        </Button>
-      </DialogTrigger> */}
-
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Create New Coupon</DialogTitle>
@@ -44,119 +50,7 @@ const CouponDialog = () => {
           </DialogDescription>
         </DialogHeader>
 
-        <form
-        // onSubmit={handleCreateCoupon}
-        >
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="title">Title</Label>
-
-              <Input
-                id="title"
-                placeholder="50% Off Fine Dining Experience"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                placeholder="Describe the coupon offer..."
-                required
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="originalPrice">Original Price ($)</Label>
-                <Input
-                  id="originalPrice"
-                  type="number"
-                  placeholder="100"
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="discountedPrice">Discounted Price ($)</Label>
-                <Input
-                  id="discountedPrice"
-                  type="number"
-                  placeholder="50"
-                  required
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="category">Category</Label>
-
-                <Select required>
-                  <SelectTrigger className="w-full" id="category">
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-
-                  <SelectContent>
-                    {/* {categories.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.slug}>
-                        {cat.icon} {cat.name}
-                      </SelectItem>
-                    ))} */}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="quantity">Quantity</Label>
-
-                <Input id="quantity" type="number" placeholder="100" required />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="validFrom">Valid From</Label>
-                <Input id="validFrom" type="date" required />
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="validUntil">Valid Until</Label>
-                <Input id="validUntil" type="date" required />
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="merchantName">Merchant Name</Label>
-              <Input id="merchantName" placeholder="Restaurant XYZ" required />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="location">Location (optional)</Label>
-              <Input id="location" placeholder="Downtown" />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="imageUrl">Image URL</Label>
-              <Input id="imageUrl" placeholder="https://..." required />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="terms">Terms & Conditions</Label>
-              <Textarea
-                id="terms"
-                placeholder="Enter terms and conditions..."
-                required
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsCouponModalOpen(false)}
-            >
-              Cancel
-            </Button>
-
-            <Button type="submit" variant="hero">
-              Create Coupon
-            </Button>
-          </DialogFooter>
-        </form>
+        <CouponForm categories={categories} />
       </DialogContent>
     </Dialog>
   );

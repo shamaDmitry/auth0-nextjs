@@ -1,14 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export default function LogoutButton({ className }: { className?: string }) {
   return (
-    // <Button asChild variant={"destructive"} className={className}>
-    //   <Link href="/auth/logout">Log Out</Link>
-    // </Button>
-
-    <a href="/auth/logout">Log Out</a>
+    <a href="/auth/logout" className={cn(className)}>
+      Log Out
+    </a>
   );
 }

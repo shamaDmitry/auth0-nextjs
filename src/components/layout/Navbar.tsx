@@ -76,6 +76,8 @@ const Navbar = () => {
           <div className="hidden items-center gap-4 md:flex">
             {user && !isLoading ? (
               <>
+                <ThemeToggle />
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -137,17 +139,16 @@ const Navbar = () => {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-
-                <ThemeToggle />
               </>
             ) : (
               <>
+                <ThemeToggle />
+
                 {isLoading ? (
                   <div className=" border rounded-full animate-pulse bg-secondary size-10"></div>
                 ) : (
                   <LoginButton />
                 )}
-                <ThemeToggle />
               </>
             )}
           </div>
