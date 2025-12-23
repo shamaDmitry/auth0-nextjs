@@ -43,7 +43,9 @@ const CouponsPage = () => {
     };
 
     const fetchCoupons = async () => {
-      const { data, error } = await supabase.from("coupons").select("*");
+      const { data, error } = await supabase
+        .from("coupons")
+        .select("*, category(name, icon)");
 
       if (error) {
         console.error(error);
@@ -71,7 +73,6 @@ const CouponsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredCoupons = useMemo(() => {
-    // let result = [...extendedCoupons];
     let result = [...coupons];
 
     // Search filter
@@ -92,7 +93,9 @@ const CouponsPage = () => {
       )?.name;
 
       if (categoryName) {
-        result = result.filter((coupon) => coupon.category === categoryName);
+        result = result.filter(
+          (coupon) => coupon.category.name === categoryName
+        );
       }
     }
 
@@ -176,8 +179,6 @@ const CouponsPage = () => {
     setFilters(newFilters);
     setCurrentPage(1);
   };
-
-  console.log("paginatedCoupons", paginatedCoupons);
 
   return (
     <div className="container mx-auto px-4 py-8">

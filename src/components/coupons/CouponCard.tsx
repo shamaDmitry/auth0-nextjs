@@ -39,7 +39,8 @@ export function CouponCard({ coupon }: CouponCardProps) {
             variant="secondary"
             className="bg-background/90 backdrop-blur-sm"
           >
-            {coupon.category}
+            <span className="mr-1">{coupon.category.icon}</span>
+            {coupon.category.name}
           </Badge>
         </div>
 

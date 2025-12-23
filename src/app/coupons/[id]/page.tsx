@@ -37,7 +37,7 @@ const CouponDetailsPage = () => {
     const fetchCoupon = async () => {
       const { data, error } = await supabase
         .from("coupons")
-        .select("*")
+        .select("*, category(name)")
         .eq("id", id)
         .single();
 
@@ -87,12 +87,14 @@ const CouponDetailsPage = () => {
     // TODO: Integrate with Stripe
   };
 
+  console.log("coupon", coupon);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
         <Link
           href="/coupons"
-          className="inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-primary"
+          className="inline-flex items-center text-muted-foreground transition-colors hover:text-primary"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to All Deals
@@ -118,7 +120,8 @@ const CouponDetailsPage = () => {
 
           <div className="mb-6">
             <div className="mb-2 flex items-center gap-2">
-              <Badge variant="secondary">{coupon.category}</Badge>
+              <Badge variant="secondary">{coupon.category.name}</Badge>
+
               {coupon.location && (
                 <span className="flex items-center text-sm text-muted-foreground">
                   <MapPin className="mr-1 h-4 w-4" />

@@ -7,7 +7,7 @@ export interface Coupon {
   discounted_price: number;
   discount_percentage: number;
   image_url: string;
-  category: string;
+  category: Category;
   expires_at: string;
   terms_and_conditions: string;
   is_active: boolean;

@@ -242,17 +242,21 @@ const CouponFilters: FC<CouponFiltersProps> = ({
           <span className="text-sm text-muted-foreground">Active filters:</span>
 
           {filters.search && (
-            <Badge variant="secondary" className="gap-1">
+            <Badge variant="outline" className="gap-1">
               Search: {filters.search}
-              <X
-                className="h-3 w-3 cursor-pointer"
+              <Button
+                className="size-5"
+                variant={"destructive"}
+                size={"icon-sm"}
                 onClick={() => handleSearchChange("")}
-              />
+              >
+                <X className="h-3 w-3" />
+              </Button>
             </Badge>
           )}
 
           {filters.category && (
-            <Badge variant="secondary" className="gap-1">
+            <Badge className="gap-1">
               {categories.find((c) => c.slug === filters.category)?.name}
 
               <Button
@@ -267,7 +271,7 @@ const CouponFilters: FC<CouponFiltersProps> = ({
           )}
 
           {(filters.priceRange[0] > 0 || filters.priceRange[1] < 1000) && (
-            <Badge variant="secondary" className="gap-1">
+            <Badge className="gap-1">
               ${filters.priceRange[0]} - ${filters.priceRange[1]}
               <Button
                 className="size-5"
@@ -281,7 +285,7 @@ const CouponFilters: FC<CouponFiltersProps> = ({
           )}
 
           {filters.minDiscount && filters.minDiscount > 0 ? (
-            <Badge variant="secondary" className="gap-1">
+            <Badge className="gap-1">
               {filters.minDiscount}%+ off
               <Button
                 className="size-5"
@@ -295,7 +299,7 @@ const CouponFilters: FC<CouponFiltersProps> = ({
           ) : null}
 
           {filters.verifiedOnly && (
-            <Badge variant="secondary" className="gap-1">
+            <Badge className="gap-1">
               Verified only
               <Button
                 className="size-5"
@@ -309,7 +313,7 @@ const CouponFilters: FC<CouponFiltersProps> = ({
           )}
 
           {filters.expiringSoon && (
-            <Badge variant="secondary" className="gap-1">
+            <Badge className="gap-1">
               Expiring soon
               <Button
                 className="size-5"

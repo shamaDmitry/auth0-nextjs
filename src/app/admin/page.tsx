@@ -1,5 +1,10 @@
 import { isUserAdmin } from "@/actions/isUserAdmin";
+import CouponTable from "@/components/admin/CouponTable";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { auth0 } from "@/lib/auth0";
 import { createClient } from "@/lib/supabase/server";
+import { DollarSign, Plus, Ticket, TrendingUp, Users } from "lucide-react";
 import { redirect } from "next/navigation";
 
 async function AdminPage() {
@@ -10,31 +15,95 @@ async function AdminPage() {
     return redirect("/unauthorized");
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const session = await auth0.getSession();
+  const { data: coupons } = await supabase
+    .from("coupons")
+    .select("*, category(name, icon)");
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white shadow rounded-lg p-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
-            Admin Dashboard
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="mb-2 text-3xl font-bold">
+            Admin Dashboard{" "}
+            <span className="underline">{session?.user?.name}</span>
           </h1>
-          <p className="text-gray-600 mb-4">
-            Welcome to the admin area. This page is only accessible to
-            administrators.
+
+          <p className="text-muted-foreground">
+            Manage your coupons and view analytics
           </p>
-          <div className="border-t border-gray-200 pt-4">
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">
-              Admin Controls
-            </h2>
-            <p className="text-gray-600">
-              Admin functionality will be added here.
-            </p>
-          </div>
         </div>
+
+        <Button variant="hero">
+          <Plus className="mr-2 h-4 w-4" />
+          Create Coupon
+        </Button>
       </div>
+
+      <div className="mb-8 grid gap-4 sm:grid-cols-4">
+        <Card>
+          <CardContent className="flex items-center gap-4 p-6">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+              <Ticket className="h-6 w-6 text-primary" />
+            </div>
+
+            <div>
+              <p className="text-2xl font-bold">22</p>
+              <p className="text-sm text-muted-foreground">Total Coupons</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="flex items-center gap-4 p-6">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-success/10">
+              <TrendingUp className="h-6 w-6 text-success" />
+            </div>
+
+            <div>
+              <p className="text-2xl font-bold">1,234</p>
+              <p className="text-sm text-muted-foreground">Total Sold</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="flex items-center gap-4 p-6">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10">
+              <DollarSign className="h-6 w-6 text-accent-foreground" />
+            </div>
+
+            <div>
+              <p className="text-2xl font-bold">$12,345.67</p>
+
+              <p className="text-sm text-muted-foreground">Total Revenue</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="flex items-center gap-4 p-6">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-secondary/10">
+              <Users className="h-6 w-6 text-secondary-foreground" />
+            </div>
+
+            <div>
+              <p className="text-2xl font-bold">1,234</p>
+              <p className="text-sm text-muted-foreground">Total Users</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>All Coupons</CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <CouponTable coupons={coupons} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

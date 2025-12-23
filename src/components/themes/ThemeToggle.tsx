@@ -20,7 +20,7 @@ export function ThemeToggle() {
 
   return (
     <Button
-      variant={"outline"}
+      variant="hero"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       className="p-2 rounded-lg hover:opacity-90 transition-opacity"
       aria-label="Toggle theme"

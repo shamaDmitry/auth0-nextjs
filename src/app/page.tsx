@@ -8,7 +8,6 @@ import { createClient } from "@/lib/supabase/server";
 export default async function Home() {
   const supabase = await createClient();
   const session = await auth0.getSession();
-  console.log("session", session?.user);
 
   const { data: categories } = await supabase.from("categories").select();
   const { data: featuredCoupons } = await supabase
