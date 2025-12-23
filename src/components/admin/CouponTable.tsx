@@ -15,12 +15,16 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { Edit, Trash2 } from "lucide-react";
 import CouponDialog from "@/components/admin/CouponDialog";
+import { useAdminStore } from "@/stores/useAdminStore";
+import DeleteAlert from "@/components/admin/DeleteAlert";
 
 interface CouponTableProps {
   coupons: Coupon[];
 }
 
 const CouponTable: FC<CouponTableProps> = ({ coupons }) => {
+  const { setIsCouponModalOpen, setIsDeleteModalOpen } = useAdminStore();
+
   return (
     <>
       <CouponDialog />
@@ -86,16 +90,31 @@ const CouponTable: FC<CouponTableProps> = ({ coupons }) => {
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
-                  <Button variant="ghost" size="icon">
-                    <Edit className="h-4 w-4" />
-                  </Button>
                   <Button
                     variant="ghost"
                     size="icon"
-                    // onClick={() => handleDeleteCoupon(coupon.id)}
+                    onClick={() => {
+                      return setIsCouponModalOpen(true);
+                    }}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      setIsDeleteModalOpen(true);
+                    }}
                   >
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
+
+                  <DeleteAlert
+                    deleteAction={() => {
+                      console.log("delete ", coupon.id);
+                    }}
+                  />
                 </div>
               </TableCell>
             </TableRow>

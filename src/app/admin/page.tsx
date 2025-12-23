@@ -1,4 +1,5 @@
 import { isUserAdmin } from "@/actions/isUserAdmin";
+import CouponModalButton from "@/components/admin/CouponModalButton";
 import CouponTable from "@/components/admin/CouponTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,10 +36,7 @@ async function AdminPage() {
           </p>
         </div>
 
-        <Button variant="hero">
-          <Plus className="mr-2 h-4 w-4" />
-          Create Coupon
-        </Button>
+        <CouponModalButton />
       </div>
 
       <div className="mb-8 grid gap-4 sm:grid-cols-4">

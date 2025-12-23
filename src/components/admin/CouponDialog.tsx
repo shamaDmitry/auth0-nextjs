@@ -20,20 +20,20 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
+import { useAdminStore } from "@/stores/useAdminStore";
 
 const CouponDialog = () => {
+  const { isCouponModalOpen, setIsCouponModalOpen } = useAdminStore();
+
   return (
-    <Dialog
-      open={true}
-      //   onOpenChange={setIsCreateDialogOpen}
-    >
-      <DialogTrigger asChild>
+    <Dialog open={isCouponModalOpen} onOpenChange={setIsCouponModalOpen}>
+      {/* <DialogTrigger asChild>
         <Button variant="hero">
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="size-4" />
           Create Coupon
         </Button>
-      </DialogTrigger>
+      </DialogTrigger> */}
 
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
         <DialogHeader>
@@ -90,9 +90,10 @@ const CouponDialog = () => {
                 <Label htmlFor="category">Category</Label>
 
                 <Select required>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full" id="category">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
+
                   <SelectContent>
                     {/* {categories.map((cat) => (
                       <SelectItem key={cat.id} value={cat.slug}>
@@ -102,16 +103,20 @@ const CouponDialog = () => {
                   </SelectContent>
                 </Select>
               </div>
+
               <div className="grid gap-2">
                 <Label htmlFor="quantity">Quantity</Label>
+
                 <Input id="quantity" type="number" placeholder="100" required />
               </div>
             </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="validFrom">Valid From</Label>
                 <Input id="validFrom" type="date" required />
               </div>
+
               <div className="grid gap-2">
                 <Label htmlFor="validUntil">Valid Until</Label>
                 <Input id="validUntil" type="date" required />
@@ -142,10 +147,11 @@ const CouponDialog = () => {
             <Button
               type="button"
               variant="outline"
-              // onClick={() => setIsCreateDialogOpen(false)}
+              onClick={() => setIsCouponModalOpen(false)}
             >
               Cancel
             </Button>
+
             <Button type="submit" variant="hero">
               Create Coupon
             </Button>
