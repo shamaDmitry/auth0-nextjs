@@ -54,7 +54,7 @@ async function AdminPage() {
 
         <Card>
           <CardContent className="flex items-center gap-4 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-success/10">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-success/20">
               <TrendingUp className="h-6 w-6 text-success" />
             </div>
 
@@ -67,7 +67,7 @@ async function AdminPage() {
 
         <Card>
           <CardContent className="flex items-center gap-4 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent/40">
               <DollarSign className="h-6 w-6 text-accent-foreground" />
             </div>
 
