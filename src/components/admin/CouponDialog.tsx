@@ -16,7 +16,12 @@ import { Category } from "@/types";
 
 const CouponDialog = () => {
   const supabase = createClient();
-  const { isCouponModalOpen, setIsCouponModalOpen } = useAdminStore();
+  const {
+    isCouponModalOpen,
+    setIsCouponModalOpen,
+    editingCoupon,
+    closeModals,
+  } = useAdminStore();
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [, setIsCategoriesLoading] = useState(true);
@@ -24,7 +29,7 @@ const CouponDialog = () => {
   useEffect(() => {
     setIsCategoriesLoading(true);
 
-    const fetchCaregories = async () => {
+    const fetchCategories = async () => {
       const { data, error } = await supabase.from("categories").select("*");
 
       if (error) {
@@ -36,21 +41,36 @@ const CouponDialog = () => {
       setIsCategoriesLoading(false);
     };
 
-    fetchCaregories();
+    fetchCategories();
   }, [supabase]);
 
+  const isEditing = !!editingCoupon;
+
   return (
-    <Dialog open={isCouponModalOpen} onOpenChange={setIsCouponModalOpen}>
+    <Dialog
+      open={isCouponModalOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          closeModals();
+        } else {
+          setIsCouponModalOpen(true);
+        }
+      }}
+    >
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Create New Coupon</DialogTitle>
+          <DialogTitle>
+            {isEditing ? "Edit Coupon" : "Create New Coupon"}
+          </DialogTitle>
 
           <DialogDescription>
-            Fill in the details below to create a new coupon.
+            {isEditing
+              ? "Update the details below to modify this coupon."
+              : "Fill in the details below to create a new coupon."}
           </DialogDescription>
         </DialogHeader>
 
-        <CouponForm categories={categories} />
+        <CouponForm categories={categories} editingCoupon={editingCoupon} />
       </DialogContent>
     </Dialog>
   );

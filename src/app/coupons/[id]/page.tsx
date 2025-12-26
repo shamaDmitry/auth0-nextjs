@@ -102,13 +102,18 @@ const CouponDetailsPage = () => {
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <div className="relative mb-6 overflow-hidden rounded-xl">
-            <Image
-              width={1000}
-              height={500}
-              src={coupon.image_url}
-              alt={coupon.title}
-              className="aspect-video w-full object-cover"
-            />
+            {coupon.image_url ? (
+              <Image
+                width={1000}
+                height={500}
+                src={coupon.image_url}
+                alt={coupon.title}
+                className="aspect-video w-full object-cover"
+              />
+            ) : (
+              <div className="aspect-video w-full bg-secondary/10"></div>
+            )}
+
             <div className="absolute left-4 top-4">
               <Badge className="bg-primary text-lg text-primary-foreground shadow-lg">
                 -{coupon.discount_percentage}% OFF

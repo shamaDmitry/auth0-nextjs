@@ -5,10 +5,10 @@ import { useAdminStore } from "@/stores/useAdminStore";
 import { Plus } from "lucide-react";
 
 const CouponModalButton = () => {
-  const { setIsCouponModalOpen } = useAdminStore();
+  const { openCreateModal } = useAdminStore();
 
   return (
-    <Button variant="hero" onClick={() => setIsCouponModalOpen(true)}>
+    <Button variant="hero" onClick={openCreateModal}>
       <Plus className="size-4" />
       Create Coupon
     </Button>

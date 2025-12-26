@@ -18,13 +18,17 @@ export function CouponCard({ coupon }: CouponCardProps) {
     <div className="group overflow-hidden rounded-xl border border-border bg-card shadow-card transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl">
       {/* Image */}
       <div className="relative aspect-4/3 overflow-hidden">
-        <Image
-          width={200}
-          height={200}
-          src={coupon.image_url}
-          alt={coupon.title}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+        {coupon.image_url ? (
+          <Image
+            width={200}
+            height={200}
+            src={coupon.image_url}
+            alt={coupon.title}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="h-full w-full bg-secondary/10"></div>
+        )}
 
         {/* Discount Badge */}
         <div className="absolute left-3 top-3">

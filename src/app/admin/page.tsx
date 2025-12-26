@@ -19,7 +19,7 @@ async function AdminPage() {
   const session = await auth0.getSession();
   const { data: coupons } = await supabase
     .from("coupons")
-    .select("*, category(name, icon)");
+    .select("*, category(name, icon, slug, id)");
 
   return (
     <div className="container mx-auto px-4 py-8">
