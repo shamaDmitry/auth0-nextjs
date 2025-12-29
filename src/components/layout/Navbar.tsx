@@ -28,10 +28,13 @@ import { useAdmin } from "@/providers/AdminProvider";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAdmin } = useAdmin();
+  // const { isAdmin } = useAdmin();
+  const isAdmin = true;
 
   const pathname = usePathname();
-  const { user, isLoading } = useUser();
+  // const { user, isLoading } = useUser();
+  const user = null;
+  const isLoading = false;
 
   const navLinks = [
     { href: "/coupons", label: "Browse Coupons", icon: Ticket },
