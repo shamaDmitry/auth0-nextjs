@@ -19,22 +19,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUser } from "@auth0/nextjs-auth0";
 import { ThemeToggle } from "@/components/themes/ThemeToggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import LoginButton from "@/components/LoginButton";
 import LogoutButton from "@/components/LogoutButton";
-import { useAdmin } from "@/providers/AdminProvider";
+import { useUser } from "@/hooks/useUser";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  // const { isAdmin } = useAdmin();
-  const isAdmin = true;
+  const { user, role, isLoading, error } = useUser();
+  const isAdmin = role?.slug === "admin";
+  const name = user?.user_metadata?.full_name;
 
   const pathname = usePathname();
-  // const { user, isLoading } = useUser();
-  const user = null;
-  const isLoading = false;
 
   const navLinks = [
     { href: "/coupons", label: "Browse Coupons", icon: Ticket },
@@ -89,7 +86,9 @@ const Navbar = () => {
                     >
                       <Avatar className="h-10 w-10">
                         <AvatarFallback className="bg-primary text-primary-foreground">
-                          {user?.name?.charAt(0) || "U"}
+                          {name?.charAt(0) || (
+                            <span className="font-bold">U</span>
+                          )}
                         </AvatarFallback>
                       </Avatar>
                     </Button>
@@ -98,7 +97,7 @@ const Navbar = () => {
                   <DropdownMenuContent className="w-56" align="end">
                     <div className="flex items-center justify-start gap-2 p-2">
                       <div className="flex flex-col space-y-1 leading-none">
-                        <p className="font-medium">{user?.name}</p>
+                        <p className="font-medium">{name}</p>
 
                         <p className="text-sm text-muted-foreground">
                           {user?.email}

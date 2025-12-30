@@ -158,8 +158,6 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
   }, [editingCoupon, form]);
 
   const onSubmit: SubmitHandler<FormValues> = (values) => {
-    console.log("submit", values);
-
     startTransition(async () => {
       const result = editingCoupon
         ? await updateCoupon(editingCoupon.id, values)
@@ -287,8 +285,6 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
                 control={form.control}
                 name="category"
                 render={({ field }) => {
-                  console.log("field", field);
-
                   return (
                     <FormItem className="grid gap-2">
                       <FormLabel>Category</FormLabel>

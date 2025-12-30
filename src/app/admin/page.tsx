@@ -3,6 +3,7 @@ import CouponModalButton from "@/components/admin/CouponModalButton";
 import CouponTable from "@/components/admin/CouponTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth0 } from "@/lib/auth0";
+import { protectRoute } from "@/lib/supabase/roles";
 import { createClient } from "@/lib/supabase/server";
 import { Coupon } from "@/types";
 import { DollarSign, Ticket, TrendingUp, Users } from "lucide-react";
@@ -10,11 +11,13 @@ import { redirect } from "next/navigation";
 
 async function AdminPage() {
   const supabase = await createClient();
-  const isAdmin = await isUserAdmin();
+  await protectRoute("admin");
 
-  if (!isAdmin) {
-    return redirect("/unauthorized");
-  }
+  // const isAdmin = await isUserAdmin();
+
+  // if (!isAdmin) {
+  //   return redirect("/unauthorized");
+  // }
 
   const session = await auth0.getSession();
   const { data: coupons } = await supabase

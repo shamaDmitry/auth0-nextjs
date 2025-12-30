@@ -1,8 +1,8 @@
-import { Category } from "@/types";
+import { Database } from "@/types/supabase";
 import Link from "next/link";
 
 interface CategorySectionProps {
-  categories: Category[] | null;
+  categories: Database["public"]["Tables"]["categories"]["Row"][] | null;
 }
 
 export function CategorySection({ categories }: CategorySectionProps) {

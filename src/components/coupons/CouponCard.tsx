@@ -4,15 +4,18 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { Database } from "@/types/supabase";
 
 interface CouponCardProps {
-  coupon: Coupon;
+  coupon: Database["public"]["Tables"]["coupons"]["Row"];
 }
 
 export function CouponCard({ coupon }: CouponCardProps) {
-  const daysLeft = Math.ceil(
-    (new Date(coupon.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-  );
+  // const daysLeft = Math.ceil(
+  //   (new Date(coupon.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+  // );
+
+  console.log("coupon.category", coupon.category);
 
   return (
     <div className="group overflow-hidden rounded-xl border border-border bg-card shadow-card transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl">
@@ -39,10 +42,7 @@ export function CouponCard({ coupon }: CouponCardProps) {
 
         {/* Category Badge */}
         <div className="absolute right-3 top-3">
-          <Badge
-            variant="secondary"
-            className="bg-background/90 backdrop-blur-sm"
-          >
+          <Badge className="backdrop-blur-sm">
             <span className="mr-1">{coupon.category.icon}</span>
             {coupon.category.name}
           </Badge>
@@ -88,7 +88,7 @@ export function CouponCard({ coupon }: CouponCardProps) {
           )}
           <span className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
-            {daysLeft > 0 ? `${daysLeft} days left` : "Expires soon"}
+            {/* {daysLeft > 0 ? `${daysLeft} days left` : "Expires soon"} */}
           </span>
         </div>
 
