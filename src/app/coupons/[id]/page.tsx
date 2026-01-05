@@ -56,7 +56,7 @@ const CouponDetailsPage = () => {
   if (isCouponLoading) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
-        <Spinner />
+        <Spinner className="mx-auto" />
       </div>
     );
   }

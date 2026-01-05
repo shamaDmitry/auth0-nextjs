@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Auth0Provider } from "@auth0/nextjs-auth0/client";
+// import { Auth0Provider } from "@auth0/nextjs-auth0/client";
 import { ThemeProvider } from "@/components/themes/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { AdminProvider } from "@/providers/AdminProvider";
+// import { AdminProvider } from "@/providers/AdminProvider";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({

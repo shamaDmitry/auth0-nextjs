@@ -16,3 +16,13 @@ export async function getFeaturedCoupons(): Promise<FeaturedCoupons | null> {
   // if (Array.isArray(data)) return data[0]; // handle array vs single logic
   return data;
 }
+
+const categoriesQuery = supabase.from("categories").select();
+
+export type Categories = QueryData<typeof categoriesQuery>;
+
+export async function getCouponCategories(): Promise<Categories | null> {
+  const { data } = await categoriesQuery;
+
+  return data;
+}

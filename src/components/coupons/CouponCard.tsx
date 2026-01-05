@@ -15,8 +15,6 @@ export function CouponCard({ coupon }: CouponCardProps) {
   //   (new Date(coupon.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
   // );
 
-  console.log("coupon.category", coupon.category);
-
   return (
     <div className="group overflow-hidden rounded-xl border border-border bg-card shadow-card transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl">
       {/* Image */}

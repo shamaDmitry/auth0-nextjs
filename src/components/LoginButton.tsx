@@ -1,5 +1,5 @@
-"use client";
+import Link from "next/link";
 
 export default function LoginButton() {
-  return <a href="/auth/login">Log In</a>;
+  return <Link href="/login">Log In</Link>;
 }
