@@ -7,6 +7,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 // import { AdminProvider } from "@/providers/AdminProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/providers/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,19 +35,21 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          {/* <Auth0Provider> */}
-          {/* <AdminProvider> */}
-          <div className="flex min-h-screen flex-col">
-            <Navbar />
+          <AuthProvider>
+            {/* <Auth0Provider> */}
+            {/* <AdminProvider> */}
+            <div className="flex min-h-screen flex-col">
+              <Navbar />
 
-            <main className="flex-1">{children}</main>
+              <main className="flex-1">{children}</main>
 
-            <Footer />
+              <Footer />
 
-            <Toaster />
-          </div>
-          {/* </AdminProvider> */}
-          {/* </Auth0Provider> */}
+              <Toaster />
+            </div>
+            {/* </AdminProvider> */}
+            {/* </Auth0Provider> */}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

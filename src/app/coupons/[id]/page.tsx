@@ -23,13 +23,16 @@ import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { Coupon } from "@/types";
 import { Spinner } from "@/components/ui/spinner";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/providers/AuthProvider";
 
 const CouponDetailsPage = () => {
-  // const { isAuthenticated, login } = useAuth();
   const { id } = useParams();
+  const router = useRouter();
   const supabase = createClient();
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [isCouponLoading, setIsCouponLoading] = useState(true);
+  const { user } = useUser();
 
   useEffect(() => {
     setIsCouponLoading(true);
@@ -84,7 +87,15 @@ const CouponDetailsPage = () => {
     // }
 
     toast("You will be redirected to complete your purchase with Stripe.");
-    // TODO: Integrate with Stripe
+
+    if (!user) {
+      const returnTo = encodeURIComponent(`/coupons/${id}`);
+      router.push(`/login?redirectTo=${returnTo}`);
+
+      return;
+    }
+
+    router.push(`/coupons/${id}/buy`);
   };
 
   return (

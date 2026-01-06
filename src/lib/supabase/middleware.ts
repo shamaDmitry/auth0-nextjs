@@ -32,8 +32,6 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // IMPORTANT: DO NOT REMOVE auth.getUser()
-  // This will refresh the session if needed
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -44,22 +42,17 @@ export async function updateSession(request: NextRequest) {
       .select("*, role(*)")
       .eq("id", user.id)
       .single();
-
-    console.log("user", user);
-    console.log("profile", profile);
   }
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-
-    return NextResponse.redirect(url);
+  if (!user) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
+
+  if (request.nextUrl.pathname === "/login" && user) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  console.log("user", user);
 
   return supabaseResponse;
 }

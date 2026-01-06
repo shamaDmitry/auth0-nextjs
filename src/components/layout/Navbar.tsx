@@ -23,11 +23,14 @@ import { ThemeToggle } from "@/components/themes/ThemeToggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import LoginButton from "@/components/LoginButton";
 import LogoutButton from "@/components/LogoutButton";
-import { useUser } from "@/hooks/useUser";
+import { useUser as useUserProvider } from "@/providers/AuthProvider";
+import { getRole } from "@/lib/utils";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, role, isLoading, error } = useUser();
+  // const { user, role, isLoading, error } = useUser();
+  const { user, role, loading, error } = useUserProvider();
+
   const isAdmin = role?.slug === "admin";
   const name = user?.user_metadata?.full_name;
 
@@ -74,7 +77,7 @@ const Navbar = () => {
 
           {/* Desktop Auth */}
           <div className="hidden items-center gap-4 md:flex">
-            {user && !isLoading ? (
+            {user && !loading ? (
               <>
                 <ThemeToggle />
 
@@ -103,9 +106,11 @@ const Navbar = () => {
                           {user?.email}
                         </p>
 
-                        <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                          {isAdmin ? "Admin" : "User"}
-                        </span>
+                        {role && (
+                          <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                            {getRole(role)}
+                          </span>
+                        )}
                       </div>
                     </div>
 
@@ -144,28 +149,31 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <ThemeToggle />
-
-                {isLoading ? (
+                {loading ? (
                   <div className=" border rounded-full animate-pulse bg-secondary size-10"></div>
                 ) : (
                   <LoginButton />
                 )}
+
+                <ThemeToggle />
               </>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="inline-flex items-center justify-center rounded-md p-2 text-foreground md:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
+          <div className="flex gap-5 items-center md:hidden">
+            <button
+              className="inline-flex items-center justify-center rounded-md p-2 text-foreground "
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -219,7 +227,7 @@ const Navbar = () => {
                 <div className="flex flex-col gap-2">
                   <LoginButton />
 
-                  <LogoutButton />
+                  {user && <LogoutButton />}
                 </div>
               )}
             </div>

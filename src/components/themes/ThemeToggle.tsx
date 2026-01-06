@@ -4,8 +4,9 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-export function ThemeToggle() {
+export function ThemeToggle({ className }: { className?: string }) {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
@@ -22,7 +23,10 @@ export function ThemeToggle() {
     <Button
       variant="hero"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-lg hover:opacity-90 transition-opacity"
+      className={cn(
+        "p-2 rounded-lg hover:opacity-90 transition-opacity",
+        className
+      )}
       aria-label="Toggle theme"
     >
       {theme === "dark" ? (

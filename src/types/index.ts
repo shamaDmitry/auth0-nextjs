@@ -1,3 +1,5 @@
+import { Database } from "@/types/supabase";
+
 export interface Coupon {
   id: string;
   title: string;
@@ -68,3 +70,5 @@ export interface CouponFilters {
   verifiedOnly?: boolean;
   expiringSoon?: boolean;
 }
+
+export type Role = Database["public"]["Tables"]["roles"]["Row"];

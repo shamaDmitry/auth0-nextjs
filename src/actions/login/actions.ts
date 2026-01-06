@@ -17,6 +17,8 @@ export async function login(prevState: FormState, formData: FormData) {
     password: formData.get("password") as string,
   };
 
+  const redirectTo = formData.get("redirectTo") as string | null;
+
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
@@ -24,7 +26,7 @@ export async function login(prevState: FormState, formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect(redirectTo || "/");
 }
 
 export async function signup(prevState: FormState, formData: FormData) {

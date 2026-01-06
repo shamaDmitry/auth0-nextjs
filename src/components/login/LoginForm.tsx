@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useActionState } from "react";
+import { useSearchParams } from "next/navigation";
 import { login, signup } from "@/actions/login/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,9 @@ const initialState = {
 };
 
 export default function LoginForm() {
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") || "/";
+
   const [loginState, loginAction, isLoginPending] = useActionState(
     login,
     initialState
@@ -24,6 +28,8 @@ export default function LoginForm() {
   return (
     <>
       <form className="flex flex-col gap-3">
+        <input type="hidden" name="redirectTo" value={redirectTo} />
+
         <Label htmlFor="email">Email:</Label>
         <Input id="email" name="email" type="email" required />
 
