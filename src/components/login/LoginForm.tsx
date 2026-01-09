@@ -14,7 +14,7 @@ const initialState = {
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/";
+  const redirectTo = searchParams.get("redirectTo") || "/coupons";
 
   const [loginState, loginAction, isLoginPending] = useActionState(
     login,
@@ -31,10 +31,22 @@ export default function LoginForm() {
         <input type="hidden" name="redirectTo" value={redirectTo} />
 
         <Label htmlFor="email">Email:</Label>
-        <Input id="email" name="email" type="email" required />
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          required
+          defaultValue={"shama.dmitry@gmail.com"}
+        />
 
         <Label htmlFor="password">Password:</Label>
-        <Input id="password" name="password" type="password" required />
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          required
+          defaultValue={"test123"}
+        />
 
         {/* <div className="flex gap-4 items-center justify-center">
           <Button
@@ -66,7 +78,6 @@ export default function LoginForm() {
         )}
 
         <div className="flex gap-4 mt-4">
-          {/* 3. Use `formAction` on buttons to trigger specific server actions */}
           <Button
             formAction={loginAction}
             disabled={isLoginPending}

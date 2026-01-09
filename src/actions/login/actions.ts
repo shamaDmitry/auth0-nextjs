@@ -26,7 +26,7 @@ export async function login(prevState: FormState, formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect(redirectTo || "/");
+  redirect(redirectTo || "/coupons");
 }
 
 export async function signup(prevState: FormState, formData: FormData) {
