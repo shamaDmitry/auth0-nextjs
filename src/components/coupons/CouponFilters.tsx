@@ -123,19 +123,21 @@ const CouponFilters: FC<CouponFiltersProps> = ({
         <div className="rounded-lg border bg-card p-4 space-y-6 animate-in slide-in-from-top-2 duration-200">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-3">
-              <div className="flex gap-3 items-center">
-                <Label className="text-sm font-medium whitespace-nowrap">
-                  Price Range
-                </Label>
+              <div className="flex gap-3">
+                <div className="flex-1 gap-3 flex flex-col">
+                  <Label className="text-sm font-medium whitespace-nowrap">
+                    Price Range
+                  </Label>
 
-                <Slider
-                  value={filters.priceRange}
-                  onValueChange={handlePriceRangeChange}
-                  max={1000}
-                  min={0}
-                  step={10}
-                  className="w-full"
-                />
+                  <Slider
+                    value={filters.priceRange}
+                    onValueChange={handlePriceRangeChange}
+                    max={1000}
+                    min={0}
+                    step={10}
+                    className="w-full"
+                  />
+                </div>
 
                 <Button
                   variant={"destructive"}
@@ -158,16 +160,31 @@ const CouponFilters: FC<CouponFiltersProps> = ({
             </div>
 
             <div className="space-y-3">
-              <Label className="text-sm font-medium">Minimum Discount</Label>
+              <div className="flex gap-3">
+                <div className="flex-1 gap-3 flex flex-col">
+                  <Label className="text-sm font-medium">
+                    Minimum Discount
+                  </Label>
 
-              <Slider
-                value={[filters.minDiscount || 0]}
-                onValueChange={(value) => handleMinDiscountChange(value[0])}
-                max={90}
-                min={0}
-                step={5}
-                className="w-full"
-              />
+                  <Slider
+                    value={[filters.minDiscount || 0]}
+                    onValueChange={(value) => handleMinDiscountChange(value[0])}
+                    max={90}
+                    min={0}
+                    step={5}
+                    className="w-full"
+                  />
+                </div>
+
+                <Button
+                  variant={"destructive"}
+                  size={"icon-xs"}
+                  onClick={() => handleMinDiscountChange(0)}
+                >
+                  <X />
+                </Button>
+              </div>
+
               <div className="flex justify-between text-sm text-muted-foreground">
                 <span>{filters.minDiscount || 0}% off or more</span>
               </div>

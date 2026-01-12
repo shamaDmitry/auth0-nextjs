@@ -9,7 +9,7 @@ export default async function Home() {
   const featuredCoupons = await getFeaturedCoupons();
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getSession();
+  const { data, error } = await supabase.auth.getUser();
 
   console.log({ data, error });
 
