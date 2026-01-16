@@ -1,7 +1,7 @@
 "use server";
 
-import { auth0 } from "@/lib/auth0";
-import { createAccessToken } from "./createAccessToken";
+// import { createClient } from "@/lib/supabase/server";
+// import { createAccessToken } from "./createAccessToken";
 
 type Role = {
   id: string;
@@ -10,31 +10,36 @@ type Role = {
 };
 
 export async function getUsersRoles(): Promise<Role[]> {
-  const session = await auth0.getSession();
-  const user = session?.user;
+  // const supabase = await createClient();
+  // const { data, error } = await supabase.auth.getUser();
 
-  if (!user) {
-    throw new Error("User not authenticated");
-  }
+  // const session = data?.session;
+  // const user = session?.user;
 
-  const token = await createAccessToken();
+  // if (!user) {
+  //   throw new Error("User not authenticated");
+  // }
 
-  const response = await fetch(
-    `https://${process.env.AUTH0_ISSUER_BASE_URL}/api/v2/users/${user.sub}/roles`,
-    {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  // const token = await createAccessToken();
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch user roles");
-  }
+  // const response = await fetch(
+  //   `https://${process.env.AUTH0_ISSUER_BASE_URL}/api/v2/users/${user.sub}/roles`,
+  //   {
+  //     method: "GET",
+  //     headers: {
+  //       Accept: "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   }
+  // );
 
-  const data: Role[] = await response.json();
+  // if (!response.ok) {
+  //   throw new Error("Failed to fetch user roles");
+  // }
 
-  return data;
+  // const data: Role[] = await response.json();
+
+  // return data;
+
+  return [];
 }

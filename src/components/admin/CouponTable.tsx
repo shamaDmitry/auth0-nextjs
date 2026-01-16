@@ -17,9 +17,10 @@ import { Edit, Trash2 } from "lucide-react";
 import CouponDialog from "@/components/admin/CouponDialog";
 import { useAdminStore } from "@/stores/useAdminStore";
 import DeleteAlert from "@/components/admin/DeleteAlert";
+import { Database } from "@/types/supabase";
 
 interface CouponTableProps {
-  coupons: Coupon[];
+  coupons: Database["public"]["Tables"]["coupons"]["Row"][];
 }
 
 const CouponTable: FC<CouponTableProps> = ({ coupons }) => {
@@ -73,7 +74,9 @@ const CouponTable: FC<CouponTableProps> = ({ coupons }) => {
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline">
-                    <span className="mr-1">{coupon.category?.icon}</span>
+                    {/* <span className="mr-1">{coupon.category?.icon}</span> */}
+                    <span className="mr-1">{coupon.category}</span>
+                    {/* {coupon.category?.name} */}
                     {coupon.category?.name}
                   </Badge>
                 </TableCell>

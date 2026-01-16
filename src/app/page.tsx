@@ -11,8 +11,6 @@ export default async function Home() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
 
-  console.log({ data, error });
-
   return (
     <div className="container mx-auto p-4">
       <HeroSection />

@@ -23,13 +23,14 @@ import { ThemeToggle } from "@/components/themes/ThemeToggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import LoginButton from "@/components/LoginButton";
 import LogoutButton from "@/components/LogoutButton";
-import { useUser as useUserProvider } from "@/providers/AuthProvider";
 import { getRole } from "@/lib/utils";
+import { useUser } from "@/providers/AuthProvider";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   // const { user, role, isLoading, error } = useUser();
-  const { user, role, loading, error } = useUserProvider();
+  // const { user, role, loading } = useUserProvider();
+  const { user, loading, role } = useUser();
 
   const isAdmin = role?.slug === "admin";
   const name = user?.user_metadata?.full_name;
@@ -97,9 +98,9 @@ const Navbar = () => {
                     </Button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent className="w-56" align="end">
-                    <div className="flex items-center justify-start gap-2 p-2">
-                      <div className="flex flex-col space-y-1 leading-none">
+                  <DropdownMenuContent className="w-56 p-1.5" align="end">
+                    <div className="flex items-center justify-start gap-2 p-2 w-full">
+                      <div className="flex flex-col space-y-1 leading-none flex-1 text-center">
                         <p className="font-medium">{name}</p>
 
                         <p className="text-sm text-muted-foreground">
@@ -107,7 +108,7 @@ const Navbar = () => {
                         </p>
 
                         {role && (
-                          <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                          <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary justify-center">
                             {getRole(role)}
                           </span>
                         )}
@@ -115,6 +116,7 @@ const Navbar = () => {
                     </div>
 
                     <DropdownMenuSeparator />
+
                     {isAdmin ? (
                       <DropdownMenuItem asChild>
                         <Link
@@ -139,23 +141,23 @@ const Navbar = () => {
 
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem className="cursor-pointer text-destructive">
+                    <DropdownMenuItem className="cursor-pointer text-destructive hover:bg-transparent!">
                       <LogOut className="mr-2 h-4 w-4" />
 
-                      <LogoutButton className="flex-1" />
+                      <LogoutButton className="flex-1" variant={"ghost"} />
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </>
             ) : (
               <>
+                <ThemeToggle />
+
                 {loading ? (
                   <div className=" border rounded-full animate-pulse bg-secondary size-10"></div>
                 ) : (
                   <LoginButton />
                 )}
-
-                <ThemeToggle />
               </>
             )}
           </div>

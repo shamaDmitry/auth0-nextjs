@@ -2,7 +2,7 @@ import { isUserAdmin } from "@/actions/isUserAdmin";
 import CouponModalButton from "@/components/admin/CouponModalButton";
 import CouponTable from "@/components/admin/CouponTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { auth0 } from "@/lib/auth0";
+// import { auth0 } from "@/lib/auth0";
 import { protectRoute } from "@/lib/supabase/roles";
 import { createClient } from "@/lib/supabase/server";
 import { Coupon } from "@/types";
@@ -19,7 +19,7 @@ async function AdminPage() {
   //   return redirect("/unauthorized");
   // }
 
-  const session = await auth0.getSession();
+  // const session = await auth0.getSession();
   const { data: coupons } = await supabase
     .from("coupons")
     .select("*, category(name, icon, slug, id)");
@@ -30,7 +30,7 @@ async function AdminPage() {
         <div>
           <h1 className="mb-2 text-3xl font-bold">
             Admin Dashboard{" "}
-            <span className="underline">{session?.user?.name}</span>
+            {/* <span className="underline">{session?.user?.name}</span> */}
           </h1>
 
           <p className="text-muted-foreground">
@@ -102,7 +102,7 @@ async function AdminPage() {
         </CardHeader>
 
         <CardContent>
-          <CouponTable coupons={coupons as Coupon[]} />
+          <CouponTable coupons={coupons} />
         </CardContent>
       </Card>
     </div>

@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-// import { Auth0Provider } from "@auth0/nextjs-auth0/client";
 import { ThemeProvider } from "@/components/themes/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-// import { AdminProvider } from "@/providers/AdminProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/providers/AuthProvider";
 
@@ -36,8 +34,6 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <AuthProvider>
-            {/* <Auth0Provider> */}
-            {/* <AdminProvider> */}
             <div className="flex min-h-screen flex-col">
               <Navbar />
 
@@ -47,8 +43,6 @@ export default function RootLayout({
 
               <Toaster />
             </div>
-            {/* </AdminProvider> */}
-            {/* </Auth0Provider> */}
           </AuthProvider>
         </ThemeProvider>
       </body>

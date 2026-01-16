@@ -1,11 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const publicRoutes = ["/login"];
-
-const isPublicRoute = (pathname: string) =>
-  publicRoutes.some((route) => pathname.startsWith(route));
-
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -41,21 +36,40 @@ export async function updateSession(request: NextRequest) {
   // IMPORTANT: If you remove getClaims() and you use server-side rendering
   // with the Supabase client, your users may be randomly logged out.
 
-  const { data } = await supabase.auth.getClaims();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const user = data?.claims;
-  const pathname = request.nextUrl.pathname;
+  const protectedPaths = ["/dashboard", "/profile", "/settings"];
+  const isProtected = protectedPaths.some((path) =>
+    request.nextUrl.pathname.startsWith(path)
+  );
 
-  if (!user && !isPublicRoute(pathname)) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
+  const publicAuthPaths = ["/login", "/signup"];
+  const isAuthPage = publicAuthPaths.some((path) =>
+    request.nextUrl.pathname.startsWith(path)
+  );
 
-    return NextResponse.redirect(url);
+  if (isProtected && !user) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (user && isPublicRoute(pathname)) {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (isAuthPage && user) {
+    return NextResponse.redirect(new URL("/coupons", request.url));
   }
+
+  return supabaseResponse;
+
+  // if (!user && !isPublicRoute(pathname)) {
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = "/login";
+
+  //   return NextResponse.redirect(url);
+  // }
+
+  // if (user && isPublicRoute(pathname)) {
+  //   return NextResponse.redirect(new URL("/", request.url));
+  // }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
   // If you're creating a new response object with NextResponse.next() make sure to:
@@ -69,6 +83,4 @@ export async function updateSession(request: NextRequest) {
   //    return myNewResponse
   // If this is not done, you may be causing the browser and server to go out
   // of sync and terminate the user's session prematurely!
-
-  return supabaseResponse;
 }

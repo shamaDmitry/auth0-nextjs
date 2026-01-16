@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const supabase = createClient();
 
-    async function fetchUserAndRole() {
+    const fetchUserAndRole = async () => {
       try {
         const {
           data: { user },
@@ -54,6 +54,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
           setRole(roleData || null);
         }
+
+        console.log("sdasada", user);
       } catch (err) {
         setError(
           err instanceof Error ? err : new Error("Failed to fetch user")
@@ -61,7 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchUserAndRole();
 
@@ -88,5 +90,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useUser = () => {
-  return useContext(Context);
+  const context = useContext(Context);
+
+  if (context === undefined) {
+    throw new Error("useUser must be used within an AuthProvider");
+  }
+
+  return context;
 };
