@@ -23,9 +23,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const supabase = createClient();
+  const supabase = createClient();
 
+  useEffect(() => {
     const fetchUserAndRole = async () => {
       try {
         const {
@@ -54,8 +54,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
           setRole(roleData || null);
         }
-
-        console.log("sdasada", user);
       } catch (err) {
         setError(
           err instanceof Error ? err : new Error("Failed to fetch user")
@@ -70,6 +68,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("_event", _event);
+      console.log("session", session);
+
       setUser(session?.user ?? null);
 
       if (!session?.user) {
@@ -80,7 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [supabase]);
 
   return (
     <Context.Provider value={{ user, loading, role, error }}>

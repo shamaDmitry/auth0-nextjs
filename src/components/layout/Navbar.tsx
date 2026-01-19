@@ -28,8 +28,6 @@ import { useUser } from "@/providers/AuthProvider";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  // const { user, role, isLoading, error } = useUser();
-  // const { user, role, loading } = useUserProvider();
   const { user, loading, role } = useUser();
 
   const isAdmin = role?.slug === "admin";

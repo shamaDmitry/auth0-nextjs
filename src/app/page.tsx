@@ -9,7 +9,12 @@ export default async function Home() {
   const featuredCoupons = await getFeaturedCoupons();
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  console.log("user", user);
 
   return (
     <div className="container mx-auto p-4">

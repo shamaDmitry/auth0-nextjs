@@ -2,7 +2,7 @@
 
 import React, { useActionState } from "react";
 import { useSearchParams } from "next/navigation";
-import { login, signup } from "@/actions/login/actions";
+import { login, signInWithProvider, signup } from "@/actions/login/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -96,6 +96,27 @@ export default function LoginForm() {
           </Button>
         </div>
       </form>
+
+      <div className="relative my-4">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Button variant="outline" onClick={() => signInWithProvider("google")}>
+          Google
+        </Button>
+
+        <Button variant="outline" onClick={() => signInWithProvider("github")}>
+          GitHub
+        </Button>
+      </div>
     </>
   );
 }
