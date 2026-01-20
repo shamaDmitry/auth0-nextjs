@@ -17,21 +17,21 @@ export type Database = {
       categories: {
         Row: {
           coupon_count: number
-          icon: string | null
+          icon: string
           id: string
           name: string
           slug: string
         }
         Insert: {
           coupon_count?: number
-          icon?: string | null
+          icon?: string
           id: string
           name: string
           slug: string
         }
         Update: {
           coupon_count?: number
-          icon?: string | null
+          icon?: string
           id?: string
           name?: string
           slug?: string
@@ -40,9 +40,9 @@ export type Database = {
       }
       coupons: {
         Row: {
-          category: string | null
+          category: string
           created_at: string
-          description: string | null
+          description: string
           discount_percentage: number
           discounted_price: number
           expires_at: string | null
@@ -52,7 +52,7 @@ export type Database = {
           is_featured: boolean | null
           location: string | null
           merchant_logo: string | null
-          merchant_name: string | null
+          merchant_name: string
           original_price: number
           quantity: number
           short_description: string | null
@@ -64,9 +64,9 @@ export type Database = {
           valid_until: string | null
         }
         Insert: {
-          category?: string | null
+          category: string
           created_at?: string
-          description?: string | null
+          description: string
           discount_percentage?: number
           discounted_price: number
           expires_at?: string | null
@@ -76,7 +76,7 @@ export type Database = {
           is_featured?: boolean | null
           location?: string | null
           merchant_logo?: string | null
-          merchant_name?: string | null
+          merchant_name: string
           original_price: number
           quantity?: number
           short_description?: string | null
@@ -88,9 +88,9 @@ export type Database = {
           valid_until?: string | null
         }
         Update: {
-          category?: string | null
+          category?: string
           created_at?: string
-          description?: string | null
+          description?: string
           discount_percentage?: number
           discounted_price?: number
           expires_at?: string | null
@@ -100,7 +100,7 @@ export type Database = {
           is_featured?: boolean | null
           location?: string | null
           merchant_logo?: string | null
-          merchant_name?: string | null
+          merchant_name?: string
           original_price?: number
           quantity?: number
           short_description?: string | null
@@ -143,6 +143,81 @@ export type Database = {
             columns: ["role"]
             isOneToOne: false
             referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchased_coupons: {
+        Row: {
+          coupon_id: string
+          created_at: string
+          currency: string
+          expires_at: string | null
+          id: string
+          metadata: Json | null
+          paid_amount: number
+          profile_id: string
+          purchased_at: string
+          quantity: number
+          redeemed_at: string | null
+          refund_reason: string | null
+          status: string
+          stripe_charge_id: string | null
+          stripe_payment_intent_id: string | null
+          stripe_payment_method: string | null
+          updated_at: string
+        }
+        Insert: {
+          coupon_id: string
+          created_at?: string
+          currency?: string
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          paid_amount: number
+          profile_id: string
+          purchased_at?: string
+          quantity?: number
+          redeemed_at?: string | null
+          refund_reason?: string | null
+          status?: string
+          stripe_charge_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_payment_method?: string | null
+          updated_at?: string
+        }
+        Update: {
+          coupon_id?: string
+          created_at?: string
+          currency?: string
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          paid_amount?: number
+          profile_id?: string
+          purchased_at?: string
+          quantity?: number
+          redeemed_at?: string | null
+          refund_reason?: string | null
+          status?: string
+          stripe_charge_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_payment_method?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchased_coupons_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchased_coupons_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

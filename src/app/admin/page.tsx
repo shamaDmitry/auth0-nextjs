@@ -1,13 +1,13 @@
-import { isUserAdmin } from "@/actions/isUserAdmin";
+// import { isUserAdmin } from "@/actions/isUserAdmin";
 import CouponModalButton from "@/components/admin/CouponModalButton";
 import CouponTable from "@/components/admin/CouponTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { auth0 } from "@/lib/auth0";
 import { protectRoute } from "@/lib/supabase/roles";
 import { createClient } from "@/lib/supabase/server";
-import { Coupon } from "@/types";
+// import { Coupon } from "@/types";
 import { DollarSign, Ticket, TrendingUp, Users } from "lucide-react";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 
 async function AdminPage() {
   const supabase = await createClient();
@@ -96,15 +96,17 @@ async function AdminPage() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>All Coupons</CardTitle>
-        </CardHeader>
+      {coupons && (
+        <Card>
+          <CardHeader>
+            <CardTitle>All Coupons</CardTitle>
+          </CardHeader>
 
-        <CardContent>
-          <CouponTable coupons={coupons} />
-        </CardContent>
-      </Card>
+          <CardContent>
+            <CouponTable coupons={coupons} />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

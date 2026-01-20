@@ -1,4 +1,4 @@
-import { Coupon } from "@/types";
+// import { Coupon } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, ShoppingCart } from "lucide-react";
@@ -41,8 +41,9 @@ export function CouponCard({ coupon }: CouponCardProps) {
         {/* Category Badge */}
         <div className="absolute right-3 top-3">
           <Badge className="backdrop-blur-sm">
-            <span className="mr-1">{coupon.category.icon}</span>
-            {coupon.category.name}
+            {/* <span className="mr-1">{coupon.category.icon}</span>
+            {coupon.category.name} */}
+            test category
           </Badge>
         </div>
 

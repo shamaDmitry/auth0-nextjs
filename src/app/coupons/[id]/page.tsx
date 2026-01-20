@@ -21,16 +21,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
-import { Coupon } from "@/types";
+// import { Coupon } from "@/types";
 import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/providers/AuthProvider";
+import { Database } from "@/types/supabase";
 
 const CouponDetailsPage = () => {
   const { id } = useParams();
   const router = useRouter();
   const supabase = createClient();
-  const [coupon, setCoupon] = useState<Coupon | null>(null);
+  const [coupon, setCoupon] = useState<
+    Database["public"]["Tables"]["coupons"]["Row"] | null
+  >(null);
   const [isCouponLoading, setIsCouponLoading] = useState(true);
   const { user } = useUser();
 
@@ -41,7 +44,7 @@ const CouponDetailsPage = () => {
       const { data, error } = await supabase
         .from("coupons")
         .select("*, category(name)")
-        .eq("id", id)
+        .eq("id", id as string)
         .single();
 
       if (error) {
@@ -77,7 +80,8 @@ const CouponDetailsPage = () => {
   }
 
   const daysLeft = Math.ceil(
-    (new Date(coupon.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+    (new Date(coupon.expires_at || new Date()).getTime() - Date.now()) /
+      (1000 * 60 * 60 * 24)
   );
 
   const handleBuy = () => {
@@ -134,7 +138,7 @@ const CouponDetailsPage = () => {
 
           <div className="mb-6">
             <div className="mb-2 flex items-center gap-2">
-              <Badge>{coupon.category.name}</Badge>
+              <Badge>{coupon.category}</Badge>
 
               {coupon.location && (
                 <span className="flex items-center text-sm text-muted-foreground">
@@ -175,7 +179,7 @@ const CouponDetailsPage = () => {
 
                   <span>
                     Valid from:{" "}
-                    {new Date(coupon.valid_from).toLocaleDateString()}
+                    {new Date(coupon.valid_from || "").toLocaleDateString()}
                   </span>
                 </div>
 
@@ -184,7 +188,7 @@ const CouponDetailsPage = () => {
 
                   <span>
                     Valid until:{" "}
-                    {new Date(coupon.valid_until).toLocaleDateString()}
+                    {new Date(coupon.valid_until || "").toLocaleDateString()}
                   </span>
                 </div>
               </div>

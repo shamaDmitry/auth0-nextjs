@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Role } from "@/hooks/useUser";
+// import { Role } from "@/hooks/useUser";
 
 export async function getUser() {
   const supabase = await createClient();
@@ -42,6 +42,6 @@ export async function protectRoute(requiredRole: string) {
   const role = await getUserRole();
 
   if (role?.slug !== requiredRole) {
-    redirect("/unauthorized"); // Create this page to show an error
+    redirect("/unauthorized");
   }
 }

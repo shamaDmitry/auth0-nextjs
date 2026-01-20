@@ -2,17 +2,13 @@
 
 import CouponFilters from "@/components/coupons/CouponFilters";
 import { useEffect, useMemo, useState } from "react";
-import {
-  Category,
-  Coupon,
-  CouponFilters as FilterType,
-  PaginationInfo,
-} from "@/types";
+import { CouponFilters as FilterType, PaginationInfo } from "@/types";
 
 import { CouponCard } from "@/components/coupons/CouponCard";
 import { CouponsPagination } from "@/components/coupons/CouponsPagination";
 import { createClient } from "@/lib/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Database } from "@/types/supabase";
 
 const ITEMS_PER_PAGE = 4;
 
@@ -20,10 +16,15 @@ const CouponsPage = () => {
   const initialCategory = "";
   const supabase = createClient();
 
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<
+    Database["public"]["Tables"]["categories"]["Row"][]
+  >([]);
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
 
-  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [coupons, setCoupons] = useState<
+    Database["public"]["Tables"]["coupons"]["Row"][]
+  >([]);
+
   const [isCouponsLoading, setIsCouponsLoading] = useState(true);
 
   useEffect(() => {
@@ -93,9 +94,7 @@ const CouponsPage = () => {
       )?.name;
 
       if (categoryName) {
-        result = result.filter(
-          (coupon) => coupon.category.name === categoryName
-        );
+        result = result.filter((coupon) => coupon.category === categoryName);
       }
     }
 
@@ -124,7 +123,7 @@ const CouponsPage = () => {
       sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
 
       result = result.filter((coupon) => {
-        const expiryDate = new Date(coupon.expires_at);
+        const expiryDate = new Date(coupon.expires_at || "");
 
         return expiryDate <= sevenDaysFromNow && expiryDate >= new Date();
       });

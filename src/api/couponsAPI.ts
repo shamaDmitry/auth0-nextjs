@@ -13,7 +13,6 @@ export type FeaturedCoupons = QueryData<typeof featuredCouponsQuery>;
 export async function getFeaturedCoupons(): Promise<FeaturedCoupons | null> {
   const { data } = await featuredCouponsQuery;
 
-  // if (Array.isArray(data)) return data[0]; // handle array vs single logic
   return data;
 }
 

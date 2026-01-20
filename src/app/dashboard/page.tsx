@@ -114,7 +114,7 @@ function CouponPurchaseCard({
         {/* Image */}
         <div className="relative w-full sm:w-48">
           <Image
-            src={coupon.imageUrl}
+            src={coupon.image_url}
             alt={coupon.title}
             className="h-40 w-full object-cover sm:h-full"
           />
@@ -134,7 +134,7 @@ function CouponPurchaseCard({
               <Badge className="mb-2">{coupon.category}</Badge>
               <h3 className="text-lg font-semibold">{coupon.title}</h3>
               <p className="text-sm text-muted-foreground">
-                {coupon.merchantName}
+                {coupon.merchant_name}
               </p>
             </div>
             <div className="text-right">

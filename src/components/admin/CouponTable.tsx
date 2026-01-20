@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { FC } from "react";
-import { Coupon } from "@/types";
+// import { Coupon } from "@/types";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Edit, Trash2 } from "lucide-react";
@@ -77,7 +77,7 @@ const CouponTable: FC<CouponTableProps> = ({ coupons }) => {
                     {/* <span className="mr-1">{coupon.category?.icon}</span> */}
                     <span className="mr-1">{coupon.category}</span>
                     {/* {coupon.category?.name} */}
-                    {coupon.category?.name}
+                    {coupon.category}
                   </Badge>
                 </TableCell>
                 <TableCell>

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { useAdminStore } from "@/stores/useAdminStore";
 import { FC, useEffect, useTransition } from "react";
-import { Category, Coupon } from "@/types";
+import { Category } from "@/types";
 import {
   Form,
   FormControl,
@@ -27,24 +27,25 @@ import {
 import { createCoupon, updateCoupon } from "@/actions/couponActions";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { Database } from "@/types/supabase";
 
 interface CouponFormProps {
   categories: Category[];
-  editingCoupon?: Coupon | null;
+  editingCoupon?: Database["public"]["Tables"]["coupons"]["Row"] | null;
 }
 
 interface FormValues {
   title: string;
   description: string;
-  originalPrice: number;
-  discountedPrice: number;
+  original_price: number;
+  discounted_price: number;
   category: string;
   quantity: number;
-  validFrom: string;
-  validUntil: string;
-  merchantName: string;
+  valid_from: string;
+  valid_until: string;
+  merchant_name: string;
   location?: string;
-  imageUrl: string;
+  image_url: string;
   terms: string;
 }
 
@@ -55,17 +56,17 @@ const formSchema = z
       .min(5, { message: "Title must be at least 5 characters." })
       .max(50),
     description: z.string().min(10).max(500),
-    originalPrice: z.number().min(1, "Original price must be at least 1"),
-    discountedPrice: z.number().min(1, "Discounted price must be at least 1"),
+    original_price: z.number().min(1, "Original price must be at least 1"),
+    discounted_price: z.number().min(1, "Discounted price must be at least 1"),
     category: z.string().min(1, { message: "Please select a category." }),
     quantity: z.number().min(1, "Quantity must be at least 1"),
-    validFrom: z.string().optional(),
+    valid_from: z.string().optional(),
     // .min(1, { message: "Please provide a valid from date." })
-    validUntil: z.string().optional(),
+    valid_until: z.string().optional(),
     // .min(1, { message: "Please provide a valid until date." })
-    merchantName: z.string().min(2).max(100),
+    merchant_name: z.string().min(2).max(100),
     location: z.string().max(100).optional(),
-    imageUrl: z
+    image_url: z
       .string()
       // url({ message: "Please enter a valid URL." })
       .optional(),
@@ -73,31 +74,31 @@ const formSchema = z
   })
   .refine(
     (data) => {
-      if (!data.validFrom || !data.validUntil) return true;
-      return new Date(data.validFrom) <= new Date(data.validUntil);
+      if (!data.valid_from || !data.valid_until) return true;
+      return new Date(data.valid_from) <= new Date(data.valid_until);
     },
     {
       message: "Valid from date must be before or equal to valid until date",
-      path: ["validFrom"],
+      path: ["valid_from"],
     }
   )
   .refine(
     (data) => {
-      if (!data.validUntil) return true;
-      return new Date(data.validUntil) >= new Date();
+      if (!data.valid_until) return true;
+      return new Date(data.valid_until) >= new Date();
     },
     {
       message: "Valid until date must be in the future",
-      path: ["validUntil"],
+      path: ["valid_until"],
     }
   )
   .refine(
     (data) => {
-      return data.discountedPrice < data.originalPrice;
+      return data.discounted_price < data.original_price;
     },
     {
       message: "Discounted price must be less than original price",
-      path: ["discountedPrice"],
+      path: ["discounted_price"],
     }
   );
 
@@ -110,16 +111,29 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
     defaultValues: {
       title: "",
       description: "",
-      originalPrice: 0,
-      discountedPrice: 0,
+      original_price: 0,
+      discounted_price: 0,
       category: "",
       quantity: 0,
-      validFrom: "",
-      validUntil: "",
-      merchantName: "",
+      valid_from: "",
+      valid_until: "",
+      merchant_name: "",
       location: "",
-      imageUrl: "",
+      image_url: "",
       terms: "",
+
+      // title: string;
+      // description: string;
+      // original_price: number;
+      // discounted_price: number;
+      // category: string;
+      // quantity: number;
+      // valid_from: string;
+      // valid_until: string;
+      // merchant_name: string;
+      // location?: string;
+      // image_url: string;
+      // terms: string;
     },
   });
 
@@ -128,30 +142,30 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
       form.reset({
         title: editingCoupon.title,
         description: editingCoupon.description,
-        originalPrice: editingCoupon.original_price,
-        discountedPrice: editingCoupon.discounted_price,
-        category: editingCoupon.category?.slug || "",
+        original_price: editingCoupon.original_price,
+        discounted_price: editingCoupon.discounted_price,
+        category: editingCoupon.category || "",
         quantity: editingCoupon.quantity,
-        validFrom: editingCoupon.valid_from?.split("T")[0] || "",
-        validUntil: editingCoupon.valid_until?.split("T")[0] || "",
-        merchantName: editingCoupon.merchant_name,
+        valid_from: editingCoupon.valid_from?.split("T")[0] || "",
+        valid_until: editingCoupon.valid_until?.split("T")[0] || "",
+        merchant_name: editingCoupon.merchant_name,
         location: editingCoupon.location || "",
-        imageUrl: editingCoupon.image_url,
-        terms: editingCoupon.terms_and_conditions,
+        image_url: editingCoupon.image_url || "",
+        terms: editingCoupon.terms_and_conditions || "",
       });
     } else {
       form.reset({
         title: "",
         description: "",
-        originalPrice: 0,
-        discountedPrice: 0,
+        original_price: 0,
+        discounted_price: 0,
         category: "",
         quantity: 0,
-        validFrom: "",
-        validUntil: "",
-        merchantName: "",
+        valid_from: "",
+        valid_until: "",
+        merchant_name: "",
         location: "",
-        imageUrl: "",
+        image_url: "",
         terms: "",
       });
     }
@@ -182,15 +196,15 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
       title: "NEW COUPON",
       description:
         "Get 2 movie tickets, a large popcorn, and 2 drinks for an unbeatable price. Valid for any showing at Premium Cinemas locations.",
-      originalPrice: 50,
-      discountedPrice: 23,
+      original_price: 50,
+      discounted_price: 23,
       category: "shopping",
       quantity: 110,
-      validFrom: "",
-      validUntil: "",
-      merchantName: "merchant xyz",
+      valid_from: "",
+      valid_until: "",
+      merchant_name: "merchant xyz",
       location: "",
-      imageUrl: "",
+      image_url: "",
       terms: "Too small: expected string to have >=10 characters",
     });
   };
@@ -239,7 +253,7 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="originalPrice"
+                name="original_price"
                 render={({ field }) => (
                   <FormItem className="grid gap-2">
                     <FormLabel>Original Price ($)</FormLabel>
@@ -260,7 +274,7 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
 
               <FormField
                 control={form.control}
-                name="discountedPrice"
+                name="discounted_price"
                 render={({ field }) => (
                   <FormItem className="grid gap-2">
                     <FormLabel>Discounted Price ($)</FormLabel>
@@ -291,9 +305,7 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
 
                       <Select
                         onValueChange={(value) => field.onChange(value)}
-                        value={
-                          field.value || editingCoupon?.category?.slug || ""
-                        }
+                        value={field.value || editingCoupon?.category || ""}
                       >
                         <FormControl>
                           <SelectTrigger className="w-full">
@@ -347,7 +359,7 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="validFrom"
+                name="valid_from"
                 render={({ field }) => (
                   <FormItem className="grid gap-2">
                     <FormLabel>Valid From</FormLabel>
@@ -361,7 +373,7 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
 
               <FormField
                 control={form.control}
-                name="validUntil"
+                name="valid_until"
                 render={({ field }) => (
                   <FormItem className="grid gap-2">
                     <FormLabel>Valid Until</FormLabel>
@@ -376,7 +388,7 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
 
             <FormField
               control={form.control}
-              name="merchantName"
+              name="merchant_name"
               render={({ field }) => (
                 <FormItem className="grid gap-2">
                   <FormLabel>Merchant Name</FormLabel>
@@ -404,7 +416,7 @@ const CouponForm: FC<CouponFormProps> = ({ categories, editingCoupon }) => {
 
             <FormField
               control={form.control}
-              name="imageUrl"
+              name="image_url"
               render={({ field }) => (
                 <FormItem className="grid gap-2">
                   <FormLabel>Image URL</FormLabel>
