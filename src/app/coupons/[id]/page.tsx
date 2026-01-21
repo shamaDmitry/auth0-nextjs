@@ -81,7 +81,7 @@ const CouponDetailsPage = () => {
 
   const daysLeft = Math.ceil(
     (new Date(coupon.expires_at || new Date()).getTime() - Date.now()) /
-      (1000 * 60 * 60 * 24)
+      (1000 * 60 * 60 * 24),
   );
 
   const handleBuy = () => {
@@ -138,7 +138,8 @@ const CouponDetailsPage = () => {
 
           <div className="mb-6">
             <div className="mb-2 flex items-center gap-2">
-              <Badge>{coupon.category}</Badge>
+              {/* <Badge>{coupon.category.name}</Badge> */}
+              <Badge>TEST</Badge>
 
               {coupon.location && (
                 <span className="flex items-center text-sm text-muted-foreground">

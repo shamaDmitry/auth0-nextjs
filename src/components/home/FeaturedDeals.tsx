@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { CouponCard } from "@/components/coupons/CouponCard";
-import { Database } from "@/types/supabase";
+import { FeaturedCoupons } from "@/api/couponsAPI";
 
 export function FeaturedDeals({
   featuredCoupons,
 }: {
-  featuredCoupons: Database["public"]["Tables"]["coupons"]["Row"][];
+  featuredCoupons: FeaturedCoupons[];
 }) {
   return (
     <section className="bg-muted/30 py-16">

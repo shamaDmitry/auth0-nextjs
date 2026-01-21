@@ -7,8 +7,9 @@ import { CouponFilters as FilterType, PaginationInfo } from "@/types";
 import { CouponCard } from "@/components/coupons/CouponCard";
 import { CouponsPagination } from "@/components/coupons/CouponsPagination";
 import { createClient } from "@/lib/supabase/client";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Database } from "@/types/supabase";
+import { Coupons, getCouponsQuery } from "@/api/couponsAPI";
+import CouponListSkeleton from "@/components/coupons/CouponListSkeleton";
 
 const ITEMS_PER_PAGE = 4;
 
@@ -21,9 +22,7 @@ const CouponsPage = () => {
   >([]);
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
 
-  const [coupons, setCoupons] = useState<
-    Database["public"]["Tables"]["coupons"]["Row"][]
-  >([]);
+  const [coupons, setCoupons] = useState<Coupons[]>([]);
 
   const [isCouponsLoading, setIsCouponsLoading] = useState(true);
 
@@ -44,14 +43,13 @@ const CouponsPage = () => {
     };
 
     const fetchCoupons = async () => {
-      const { data, error } = await supabase
-        .from("coupons")
-        .select("*, category(name, icon)");
+      const couponsQuery = getCouponsQuery(supabase);
+      const { data: coupons, error } = await couponsQuery;
 
       if (error) {
         console.error(error);
       } else {
-        setCoupons(data);
+        setCoupons(coupons);
       }
 
       setIsCouponsLoading(false);
@@ -83,14 +81,14 @@ const CouponsPage = () => {
         (coupon) =>
           coupon.title.toLowerCase().includes(searchLower) ||
           coupon.description.toLowerCase().includes(searchLower) ||
-          coupon.merchant_name.toLowerCase().includes(searchLower)
+          coupon.merchant_name.toLowerCase().includes(searchLower),
       );
     }
 
     // Category filter
     if (filters.category) {
       const categoryName = categories.find(
-        (c) => c.slug === filters.category
+        (c) => c.slug === filters.category,
       )?.name;
 
       if (categoryName) {
@@ -102,13 +100,13 @@ const CouponsPage = () => {
     result = result.filter(
       (coupon) =>
         coupon.discounted_price >= filters.priceRange[0] &&
-        coupon.discounted_price <= filters.priceRange[1]
+        coupon.discounted_price <= filters.priceRange[1],
     );
 
     // Minimum discount filter
     if (filters.minDiscount && filters.minDiscount > 0) {
       result = result.filter(
-        (coupon) => coupon.discount_percentage >= filters.minDiscount!
+        (coupon) => coupon.discount_percentage >= filters.minDiscount!,
       );
     }
 
@@ -134,7 +132,7 @@ const CouponsPage = () => {
       case "newest":
         result.sort(
           (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         );
         break;
       case "popular":
@@ -158,7 +156,7 @@ const CouponsPage = () => {
 
   const paginatedCoupons = filteredCoupons.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
   );
 
   const pagination: PaginationInfo = {
@@ -203,13 +201,15 @@ const CouponsPage = () => {
         />
       </div>
 
-      {isCouponsLoading && paginatedCoupons.length === 0 && (
-        <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <Skeleton />
+      {isCouponsLoading && (
+        <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 h-96">
+          {new Array(4).fill(0).map((item, index) => {
+            return <CouponListSkeleton key={index} />;
+          })}
         </div>
       )}
 
-      {paginatedCoupons.length > 0 ? (
+      {paginatedCoupons.length > 0 && (
         <>
           <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {paginatedCoupons.map((coupon, index) => (
@@ -228,12 +228,6 @@ const CouponsPage = () => {
             onPageChange={handlePageChange}
           />
         </>
-      ) : (
-        <div className="py-20 text-center">
-          <p className="text-lg text-muted-foreground">
-            No coupons found matching your criteria.
-          </p>
-        </div>
       )}
     </div>
   );
