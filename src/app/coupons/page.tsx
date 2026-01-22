@@ -7,9 +7,14 @@ import { CouponFilters as FilterType, PaginationInfo } from "@/types";
 import { CouponCard } from "@/components/coupons/CouponCard";
 import { CouponsPagination } from "@/components/coupons/CouponsPagination";
 import { createClient } from "@/lib/supabase/client";
-import { Database } from "@/types/supabase";
-import { Coupons, getCouponsQuery } from "@/api/couponsAPI";
+import {
+  Categories,
+  Coupons,
+  getCategoriesQuery,
+  getCouponsQuery,
+} from "@/api/couponsAPI";
 import CouponListSkeleton from "@/components/coupons/CouponListSkeleton";
+import EmptyState from "@/components/coupons/EmptyState";
 
 const ITEMS_PER_PAGE = 4;
 
@@ -17,9 +22,7 @@ const CouponsPage = () => {
   const initialCategory = "";
   const supabase = createClient();
 
-  const [categories, setCategories] = useState<
-    Database["public"]["Tables"]["categories"]["Row"][]
-  >([]);
+  const [categories, setCategories] = useState<Categories[]>([]);
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
 
   const [coupons, setCoupons] = useState<Coupons[]>([]);
@@ -31,7 +34,8 @@ const CouponsPage = () => {
     setIsCouponsLoading(true);
 
     const fetchCaregories = async () => {
-      const { data, error } = await supabase.from("categories").select("*");
+      const categoriesQuery = getCategoriesQuery(supabase);
+      const { data, error } = await categoriesQuery;
 
       if (error) {
         console.error(error);
@@ -77,6 +81,7 @@ const CouponsPage = () => {
     // Search filter
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
+
       result = result.filter(
         (coupon) =>
           coupon.title.toLowerCase().includes(searchLower) ||
@@ -92,7 +97,9 @@ const CouponsPage = () => {
       )?.name;
 
       if (categoryName) {
-        result = result.filter((coupon) => coupon.category === categoryName);
+        result = result.filter(
+          (coupon) => coupon.category.name === categoryName,
+        );
       }
     }
 
@@ -229,6 +236,8 @@ const CouponsPage = () => {
           />
         </>
       )}
+
+      {paginatedCoupons.length === 0 && !isCouponsLoading && <EmptyState />}
     </div>
   );
 };

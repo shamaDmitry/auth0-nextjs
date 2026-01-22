@@ -1,8 +1,11 @@
-import { Database } from "@/types/supabase";
+"use client";
+
+import { Categories } from "@/api/couponsAPI";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface CategorySectionProps {
-  categories: Database["public"]["Tables"]["categories"]["Row"][] | null;
+  categories: Categories[];
 }
 
 export function CategorySection({ categories }: CategorySectionProps) {
@@ -21,26 +24,32 @@ export function CategorySection({ categories }: CategorySectionProps) {
           {categories &&
             categories.map((category, index) => {
               return (
-                <Link
+                <motion.div
                   key={category.id}
-                  href={`/coupons?category=${category.slug}`}
-                  className="group flex flex-col items-center rounded-xl border border-border bg-card p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg animate-fade-in"
-                  style={{ animationDelay: `${index * 50}ms` }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
                 >
-                  <span className="mb-3 text-4xl transition-transform duration-300 group-hover:scale-110">
-                    {category.icon}
-                  </span>
+                  <Link
+                    href={`/coupons?category=${category.slug}`}
+                    className="group flex flex-col items-center rounded-xl border border-border bg-card p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg animate-fade-in"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <span className="mb-3 text-4xl transition-transform duration-300 group-hover:scale-110">
+                      {category.icon}
+                    </span>
 
-                  <span className="mb-1 text-sm font-semibold">
-                    {category.name}
-                  </span>
+                    <span className="mb-1 text-sm font-semibold">
+                      {category.name}
+                    </span>
 
-                  <span className="text-xs text-muted-foreground">
-                    {category.coupon_count > 1
-                      ? `${category.coupon_count} deals`
-                      : `${category.coupon_count} deal`}
-                  </span>
-                </Link>
+                    <span className="text-xs text-muted-foreground">
+                      {category.coupon_count > 1
+                        ? `${category.coupon_count} deals`
+                        : `${category.coupon_count} deal`}
+                    </span>
+                  </Link>
+                </motion.div>
               );
             })}
         </div>

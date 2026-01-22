@@ -25,15 +25,13 @@ import { createClient } from "@/lib/supabase/client";
 import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/providers/AuthProvider";
-import { Database } from "@/types/supabase";
+import { Coupon, getCouponQuery } from "@/api/couponsAPI";
 
 const CouponDetailsPage = () => {
   const { id } = useParams();
   const router = useRouter();
   const supabase = createClient();
-  const [coupon, setCoupon] = useState<
-    Database["public"]["Tables"]["coupons"]["Row"] | null
-  >(null);
+  const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [isCouponLoading, setIsCouponLoading] = useState(true);
   const { user } = useUser();
 
@@ -41,11 +39,8 @@ const CouponDetailsPage = () => {
     setIsCouponLoading(true);
 
     const fetchCoupon = async () => {
-      const { data, error } = await supabase
-        .from("coupons")
-        .select("*, category(name)")
-        .eq("id", id as string)
-        .single();
+      const couponQuery = getCouponQuery(supabase, id as string);
+      const { data, error } = await couponQuery;
 
       if (error) {
         console.error(error);
@@ -138,8 +133,10 @@ const CouponDetailsPage = () => {
 
           <div className="mb-6">
             <div className="mb-2 flex items-center gap-2">
-              {/* <Badge>{coupon.category.name}</Badge> */}
-              <Badge>TEST</Badge>
+              <Badge>
+                <span>{coupon.category.icon}</span>
+                {coupon.category.name}
+              </Badge>
 
               {coupon.location && (
                 <span className="flex items-center text-sm text-muted-foreground">

@@ -17,3 +17,19 @@ export const getCouponsQuery = (client: TypedSupabaseClient) => {
   return client.from("coupons").select("*, category(*)");
 };
 export type Coupons = QueryData<ReturnType<typeof getCouponsQuery>>[number];
+
+export const getCategoriesQuery = (client: TypedSupabaseClient) => {
+  return client.from("categories").select("*");
+};
+export type Categories = QueryData<
+  ReturnType<typeof getCategoriesQuery>
+>[number];
+
+export const getCouponQuery = (client: TypedSupabaseClient, id: string) => {
+  return client
+    .from("coupons")
+    .select("*, category(name, icon)")
+    .eq("id", id)
+    .single();
+};
+export type Coupon = QueryData<ReturnType<typeof getCouponQuery>>;
