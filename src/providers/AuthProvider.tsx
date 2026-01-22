@@ -17,13 +17,24 @@ const Context = createContext<{
   error: null,
 });
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+export function AuthProvider({
+  children,
+  initialUser,
+}: {
+  children: React.ReactNode;
+  initialUser: User | null;
+}) {
+  const [user, setUser] = useState<User | null>(initialUser);
   const [role, setRole] = useState<Role | null>(null);
   const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialUser);
 
   const supabase = createClient();
+
+  useEffect(() => {
+    setUser(initialUser);
+    setLoading(false);
+  }, [initialUser]);
 
   useEffect(() => {
     const fetchUserAndRole = async () => {
@@ -56,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (err) {
         setError(
-          err instanceof Error ? err : new Error("Failed to fetch user")
+          err instanceof Error ? err : new Error("Failed to fetch user"),
         );
       } finally {
         setLoading(false);

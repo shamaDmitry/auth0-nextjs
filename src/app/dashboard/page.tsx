@@ -15,9 +15,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function Dashboard() {
-  const user = { name: "John Doe" };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const activeCoupons = purchasedCoupons.filter((p) => !p.isUsed);
   const usedCoupons = purchasedCoupons.filter((p) => p.isUsed);
@@ -27,7 +31,9 @@ export default async function Dashboard() {
       <div className="mb-8">
         <h1 className="mb-2 text-3xl font-bold">My Coupons</h1>
         <p className="text-muted-foreground">
-          Welcome back, {user?.name}! Manage your purchased coupons here.
+          Welcome back,{" "}
+          <span className="font-bold underlin">{user?.email}</span>! Manage your
+          purchased coupons here.
         </p>
       </div>
 
@@ -114,6 +120,8 @@ function CouponPurchaseCard({
         {/* Image */}
         <div className="relative w-full sm:w-48">
           <Image
+            width={192}
+            height={160}
             src={coupon.image_url}
             alt={coupon.title}
             className="h-40 w-full object-cover sm:h-full"
