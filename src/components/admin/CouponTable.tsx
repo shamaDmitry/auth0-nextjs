@@ -18,9 +18,10 @@ import CouponDialog from "@/components/admin/CouponDialog";
 import { useAdminStore } from "@/stores/useAdminStore";
 import DeleteAlert from "@/components/admin/DeleteAlert";
 import { Database } from "@/types/supabase";
+import { Coupon } from "@/api/couponsAPI";
 
 interface CouponTableProps {
-  coupons: Database["public"]["Tables"]["coupons"]["Row"][];
+  coupons: Coupon[];
 }
 
 const CouponTable: FC<CouponTableProps> = ({ coupons }) => {
@@ -74,10 +75,8 @@ const CouponTable: FC<CouponTableProps> = ({ coupons }) => {
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline">
-                    {/* <span className="mr-1">{coupon.category?.icon}</span> */}
-                    <span className="mr-1">{coupon.category}</span>
-                    {/* {coupon.category?.name} */}
-                    {coupon.category}
+                    <span className="mr-1">{coupon.category.icon}</span>
+                    {coupon.category.name}
                   </Badge>
                 </TableCell>
                 <TableCell>

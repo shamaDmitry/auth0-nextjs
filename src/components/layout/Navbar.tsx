@@ -30,7 +30,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, loading, role } = useUser();
 
-  const isAdmin = role?.slug === "admin";
+  const isAdmin = role?.role?.slug === "admin";
   const name = user?.user_metadata?.full_name;
 
   const pathname = usePathname();
@@ -43,9 +43,6 @@ const Navbar = () => {
     return link && pathname.includes(link);
   };
 
-
-  console.log({user, loading, role});
-  
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto px-4">
@@ -110,7 +107,7 @@ const Navbar = () => {
 
                         {role && (
                           <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary justify-center">
-                            {getRole(role)}
+                            {getRole(role.role)}
                           </span>
                         )}
                       </div>

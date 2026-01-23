@@ -32,20 +32,26 @@ export async function login(prevState: FormState, formData: FormData) {
 
 export async function signup(prevState: FormState, formData: FormData) {
   const supabase = await createClient();
+  const origin = (await headers()).get("origin");
 
   const data = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
   };
 
-  const { error } = await supabase.auth.signUp(data);
+  const { error } = await supabase.auth.signUp({
+    ...data,
+    options: {
+      emailRedirectTo: `${origin}/auth/callback`,
+    },
+  });
 
   if (error) {
     return { message: "Signup failed", error: error.message };
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect("/check-email");
 }
 
 export async function signout() {
@@ -64,6 +70,10 @@ export async function signInWithProvider(provider: "google" | "github") {
     provider,
     options: {
       redirectTo: `${origin}/auth/callback`,
+      queryParams: {
+        access_type: "offline", // Request refresh token (Google specific)
+        prompt: "consent", // Force consent screen (Google specific)
+      },
     },
   });
 

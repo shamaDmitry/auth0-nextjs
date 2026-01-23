@@ -18,11 +18,11 @@ export default function LoginForm() {
 
   const [loginState, loginAction, isLoginPending] = useActionState(
     login,
-    initialState
+    initialState,
   );
   const [signupState, signupAction, isSignupPending] = useActionState(
     signup,
-    initialState
+    initialState,
   );
 
   return (
@@ -36,7 +36,7 @@ export default function LoginForm() {
           name="email"
           type="email"
           required
-          defaultValue={"shama.dmitry@gmail.com"}
+          defaultValue={"dmitry.shama@faceit.com.ua"}
         />
 
         <Label htmlFor="password">Password:</Label>

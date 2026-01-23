@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { createClient } from "@/lib/supabase/server";
+import { getUserRoleQuery } from "@/api/userAPI";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,9 +30,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const supabase = await createClient();
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  let userRole = null;
+
+  if (user) {
+    const roleQuery = getUserRoleQuery(supabase, user.id);
+
+    const { data } = await roleQuery;
+    userRole = data;
+  }
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -39,7 +50,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <AuthProvider initialUser={user}>
+          <AuthProvider initialUser={user} initialRole={userRole}>
             <div className="flex min-h-screen flex-col">
               <Navbar />
 

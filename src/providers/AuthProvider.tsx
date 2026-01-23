@@ -1,14 +1,14 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
-import { Role } from "@/types";
+import { getUserRoleQuery, UserRole } from "@/api/userAPI";
 
 const Context = createContext<{
   user: User | null;
   loading: boolean;
-  role: Role | null;
+  role: UserRole | null;
   error: Error | null;
 }>({
   user: null,
@@ -20,72 +20,43 @@ const Context = createContext<{
 export function AuthProvider({
   children,
   initialUser,
+  initialRole,
 }: {
   children: React.ReactNode;
   initialUser: User | null;
+  initialRole: UserRole | null;
 }) {
   const [user, setUser] = useState<User | null>(initialUser);
-  const [role, setRole] = useState<Role | null>(null);
+  const [role, setRole] = useState<UserRole | null>(initialRole);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(!initialUser);
 
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     setUser(initialUser);
+    setRole(initialRole);
     setLoading(false);
-  }, [initialUser]);
+  }, [initialUser, initialRole]);
 
   useEffect(() => {
-    const fetchUserAndRole = async () => {
-      try {
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
-
-        if (userError) throw userError;
-
-        setUser(user);
-
-        if (user) {
-          const { data, error: profileError } = await supabase
-            .from("profiles")
-            .select("role(*)")
-            .eq("id", user.id)
-            .single();
-
-          if (profileError) {
-            throw profileError;
-          }
-
-          const roleData = (
-            Array.isArray(data?.role) ? data.role[0] : data?.role
-          ) as Role | null;
-
-          setRole(roleData || null);
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to fetch user"),
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserAndRole();
-
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const currentUser = session?.user ?? null;
 
-      if (!session?.user) {
-        setRole(null);
+      setUser(currentUser);
+
+      if (currentUser) {
+        setLoading(true);
+
+        const { data } = await getUserRoleQuery(supabase, currentUser.id);
+
+        setRole(data);
       } else {
-        fetchUserAndRole();
+        setRole(null);
       }
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
