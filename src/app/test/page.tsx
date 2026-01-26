@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { motion, AnimatePresence, LayoutGroup, Variants } from "framer-motion";
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+import LoginForm from "@/components/login/LoginForm";
+import { Spinner } from "@/components/ui/spinner";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0, scale: 0.95 },
@@ -54,7 +56,17 @@ export default function AuthPageEnhanced() {
   const toggleAuthMode = () => setIsLogin(!isLogin);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50/50 p-4 dark:bg-gray-900/50 overflow-hidden">
+    <div className="flex flex-col min-h-screen items-center justify-center bg-gray-50/50 p-4 dark:bg-gray-900/50 overflow-hidden">
+      <Suspense
+        fallback={
+          <>
+            <Spinner />
+          </>
+        }
+      >
+        <LoginForm />
+      </Suspense>
+
       <LayoutGroup>
         <motion.div
           layout
