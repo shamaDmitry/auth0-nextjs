@@ -11,6 +11,9 @@ export type FormState = {
 };
 
 export async function login(prevState: FormState, formData: FormData) {
+  console.log("login prevState", prevState);
+  console.log("login formData", formData);
+
   const supabase = await createClient();
 
   const data = {
@@ -31,12 +34,16 @@ export async function login(prevState: FormState, formData: FormData) {
 }
 
 export async function signup(prevState: FormState, formData: FormData) {
+  console.log("signup prevState", prevState);
+  console.log("signup formData", formData);
+
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
 
   const data = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
+    full_name: formData.get("full_name") as string,
   };
 
   const { error } = await supabase.auth.signUp({
