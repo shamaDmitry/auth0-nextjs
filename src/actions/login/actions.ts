@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { FormEvent } from "react";
 
 export type FormState = {
   message: string;
@@ -58,7 +59,7 @@ export async function signup(prevState: FormState, formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/check-email");
+  redirect(`/signup-success?email=${encodeURIComponent(data.email)}`);
 }
 
 export async function signout() {

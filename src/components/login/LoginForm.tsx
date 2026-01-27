@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useActionState, useState } from "react";
+import React, { useActionState, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { login, signInWithProvider, signup } from "@/actions/login/actions";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Github } from "lucide-react";
+import { Eye, EyeOff, Github } from "lucide-react";
 import Link from "next/link";
 import { Spinner } from "../ui/spinner";
 
@@ -59,7 +59,20 @@ const buttonInteraction: Variants = {
 
 export default function LoginForm() {
   const [isLogin, setIsLogin] = useState(true);
-  const toggleAuthMode = () => setIsLogin(!isLogin);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [currentError, setCurrentError] = useState("");
+
+  const toggleAuthMode = () => {
+    setIsLogin(!isLogin);
+    setShowError(false);
+    setCurrentError("");
+  };
+
+  const handleInputChange = () => {
+    setShowError(false);
+    setCurrentError("");
+  };
 
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/coupons";
@@ -72,6 +85,18 @@ export default function LoginForm() {
     signup,
     initialState,
   );
+
+  // Show error when new error appears from server
+  useEffect(() => {
+    const currentError = isLogin ? loginState?.error : signupState?.error;
+
+    console.log("currentError", currentError);
+
+    if (currentError) {
+      setShowError(true);
+      setCurrentError(currentError);
+    }
+  }, [loginState?.error, signupState?.error, isLogin]);
 
   return (
     <>
@@ -175,7 +200,6 @@ export default function LoginForm() {
                     exit="exit"
                     variants={containerVariants}
                     layout
-                    // onSubmit={(e) => e.preventDefault()}
                     className="grid gap-4"
                   >
                     <input type="hidden" name="redirectTo" value={redirectTo} />
@@ -192,6 +216,7 @@ export default function LoginForm() {
                           type="text"
                           placeholder="John Doe"
                           defaultValue={"John Doe"}
+                          onChange={handleInputChange}
                           className="h-11 transition-all focus-visible:ring-2 focus-visible:ring-primary/50"
                         />
                       </motion.div>
@@ -204,6 +229,7 @@ export default function LoginForm() {
                         type="email"
                         placeholder="m@example.com"
                         required
+                        onChange={handleInputChange}
                         className="h-11 transition-all focus-visible:ring-2 focus-visible:ring-primary/50"
                         name="email"
                         defaultValue={"dmitry.shama@faceit.com.ua"}
@@ -224,14 +250,28 @@ export default function LoginForm() {
                         )}
                       </div>
 
-                      <Input
-                        id="password"
-                        type="password"
-                        required
-                        name="password"
-                        defaultValue={"test123"}
-                        className="h-11 transition-all focus-visible:ring-2 focus-visible:ring-primary/50"
-                      />
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="password"
+                          type={isPasswordVisible ? "text" : "password"}
+                          required
+                          name="password"
+                          defaultValue={"test123"}
+                          onChange={handleInputChange}
+                          className="h-11 transition-all focus-visible:ring-2 focus-visible:ring-primary/50"
+                        />
+
+                        <Button
+                          className="h-11"
+                          type="button"
+                          variant="outline"
+                          onClick={() =>
+                            setIsPasswordVisible(!isPasswordVisible)
+                          }
+                        >
+                          {isPasswordVisible ? <EyeOff /> : <Eye />}
+                        </Button>
+                      </div>
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="pt-2">
@@ -257,14 +297,9 @@ export default function LoginForm() {
                       </motion.div>
                     </motion.div>
 
-                    {loginState?.error && (
+                    {showError && loginState?.error && (
                       <div className="text-red-500 text-sm p-2 bg-red-50 rounded">
-                        {loginState.error}
-                      </div>
-                    )}
-                    {signupState?.error && (
-                      <div className="text-red-500 text-sm p-2 bg-red-50 rounded">
-                        {signupState.error}
+                        {currentError}
                       </div>
                     )}
                   </motion.form>

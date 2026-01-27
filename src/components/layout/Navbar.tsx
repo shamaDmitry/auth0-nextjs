@@ -32,6 +32,7 @@ const Navbar = () => {
 
   const isAdmin = role?.role?.slug === "admin";
   const name = user?.user_metadata?.full_name;
+  const email = user?.user_metadata?.email;
 
   const pathname = usePathname();
 
@@ -89,7 +90,9 @@ const Navbar = () => {
                       <Avatar className="h-10 w-10">
                         <AvatarFallback className="bg-primary text-primary-foreground">
                           {name?.charAt(0) || (
-                            <span className="font-bold">U</span>
+                            <span className="font-bold">
+                              {email?.charAt(0).toUpperCase()}
+                            </span>
                           )}
                         </AvatarFallback>
                       </Avatar>
@@ -101,9 +104,7 @@ const Navbar = () => {
                       <div className="flex flex-col space-y-1 leading-none flex-1 text-center">
                         <p className="font-medium">{name}</p>
 
-                        <p className="text-sm text-muted-foreground">
-                          {user?.email}
-                        </p>
+                        <p className="text-sm text-muted-foreground">{email}</p>
 
                         {role && (
                           <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary justify-center">
@@ -218,7 +219,7 @@ const Navbar = () => {
                     </Link>
                   )}
 
-                  <Button variant="outline">
+                  <Button variant="outline" className="w-full">
                     <LogOut className="mr-2 h-4 w-4" />
                     Log out
                   </Button>
@@ -227,7 +228,7 @@ const Navbar = () => {
                 <div className="flex flex-col gap-2">
                   <LoginButton />
 
-                  {user && <LogoutButton />}
+                  {user && <LogoutButton className="w-full" />}
                 </div>
               )}
             </div>

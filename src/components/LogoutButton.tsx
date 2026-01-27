@@ -12,8 +12,8 @@ export default function LogoutButton({
   ...props
 }: LogoutButtonProps) {
   return (
-    <form action={signout}>
-      <Button className={cn(className)} {...props}>
+    <form action={signout} className="w-full">
+      <Button className={cn("w-full", className)} {...props}>
         Log Out
       </Button>
     </form>
