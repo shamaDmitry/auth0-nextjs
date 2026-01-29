@@ -35,9 +35,6 @@ export async function login(prevState: FormState, formData: FormData) {
 }
 
 export async function signup(prevState: FormState, formData: FormData) {
-  console.log("signup prevState", prevState);
-  console.log("signup formData", formData);
-
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { toast } from "sonner"; // Or your preferred toast library
+import { toast } from "sonner";
 
 export async function resendVerificationEmail(email: string) {
   const supabase = createClient();

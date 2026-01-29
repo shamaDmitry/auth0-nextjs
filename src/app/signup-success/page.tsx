@@ -35,6 +35,7 @@ export default function SignupSuccess() {
   useEffect(() => {
     if (cooldown > 0) {
       const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+
       return () => clearTimeout(timer);
     }
   }, [cooldown]);

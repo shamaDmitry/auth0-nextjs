@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Eye, EyeOff, Github } from "lucide-react";
 import Link from "next/link";
-import { Spinner } from "../ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
 
 const initialState = {
   message: "",
@@ -86,17 +86,19 @@ export default function LoginForm() {
     initialState,
   );
 
-  // Show error when new error appears from server
-  useEffect(() => {
-    const currentError = isLogin ? loginState?.error : signupState?.error;
+  // useEffect(() => {
+  //   const currentError = isLogin ? loginState?.error : signupState?.error;
 
-    console.log("currentError", currentError);
+  //   console.log("currentError", currentError);
 
-    if (currentError) {
-      setShowError(true);
-      setCurrentError(currentError);
-    }
-  }, [loginState?.error, signupState?.error, isLogin]);
+  //   if (currentError) {
+  //     setShowError(true);
+  //     setCurrentError(currentError);
+  //   }
+  // }, [loginState?.error, signupState?.error, isLogin]);
+
+  console.log("showError", showError);
+  console.log("signupState", signupState.error);
 
   return (
     <>
@@ -297,11 +299,11 @@ export default function LoginForm() {
                       </motion.div>
                     </motion.div>
 
-                    {showError && loginState?.error && (
+                    {
                       <div className="text-red-500 text-sm p-2 bg-red-50 rounded">
-                        {currentError}
+                        {signupState?.error || loginState?.error}
                       </div>
-                    )}
+                    }
                   </motion.form>
                 </AnimatePresence>
               </motion.div>
@@ -325,79 +327,6 @@ export default function LoginForm() {
           </Card>
         </motion.div>
       </LayoutGroup>
-
-      {/* <form className="flex flex-col gap-3">
-        <input type="hidden" name="redirectTo" value={redirectTo} />
-
-        <Label htmlFor="email">Email:</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          required
-          defaultValue={"dmitry.shama@faceit.com.ua"}
-        />
-
-        <Label htmlFor="password">Password:</Label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          required
-          defaultValue={"test123"}
-        />
-
-        {loginState?.error && (
-          <div className="text-red-500 text-sm p-2 bg-red-50 rounded">
-            {loginState.error}
-          </div>
-        )}
-        {signupState?.error && (
-          <div className="text-red-500 text-sm p-2 bg-red-50 rounded">
-            {signupState.error}
-          </div>
-        )}
-
-        <div className="flex gap-4 mt-4">
-          <Button
-            formAction={loginAction}
-            disabled={isLoginPending}
-            className=""
-            variant={"default"}
-          >
-            {isLoginPending ? "Logging in..." : "Log in"}
-          </Button>
-
-          <Button
-            formAction={signupAction}
-            disabled={isSignupPending}
-            variant={"secondary"}
-          >
-            {isSignupPending ? "Signing up..." : "Sign up"}
-          </Button>
-        </div>
-      </form>
-
-      <div className="relative my-4">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Button variant="outline" onClick={() => signInWithProvider("google")}>
-          Google
-        </Button>
-
-        <Button variant="outline" onClick={() => signInWithProvider("github")}>
-          GitHub
-        </Button>
-      </div> */}
     </>
   );
 }
